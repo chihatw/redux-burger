@@ -1,0 +1,53 @@
+{
+  "name": "burger-dash",
+  "version": "0.1.0",
+  "homepage": "http://monjason23.github.io/burger-dash",
+  "private": true,
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "d3-ease": "^1.0.5",
+    "gh-pages": "^2.1.1",
+    "immutability-helper": "^3.0.1",
+    "lodash": "^4.17.15",
+    "randomstring": "^1.1.5",
+    "react": "^16.8.6",
+    "react-device-detect": "^1.7.5",
+    "react-dnd": "^9.3.4",
+    "react-dnd-html5-backend": "^9.3.4",
+    "react-dnd-touch-backend": "^9.3.4",
+    "react-dom": "^16.8.6",
+    "react-draggable": "^3.3.1",
+    "react-preload": "^0.6.0",
+    "react-redux": "^7.1.0",
+    "react-scripts": "3.0.1",
+    "react-share": "^3.0.0",
+    "react-spinners": "^0.6.1",
+    "react-spring": "^8.0.27",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
+    "styled-components": "^4.3.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
