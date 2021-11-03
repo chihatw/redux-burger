@@ -24,7 +24,7 @@ const DroppableContainer = styled.div`
   }
 `;
 
-function GameDroppableArea() {
+const GameDroppableArea = () => {
   const dispatch = useDispatch();
 
   const { playOnEveryInteraction } = useGameAudio('serve');
@@ -56,6 +56,6 @@ function GameDroppableArea() {
   });
 
   return <DroppableContainer className='droppable-area' ref={drop} />;
-}
+};
 
 export default GameDroppableArea;

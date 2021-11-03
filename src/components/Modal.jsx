@@ -1,8 +1,8 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import styled from "styled-components";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import styled from 'styled-components';
 
-import { useTransition, animated as a, config } from "react-spring";
+import { useTransition, animated as a, config } from 'react-spring';
 
 const Backdrop = styled.div`
   position: absolute;
@@ -36,6 +36,7 @@ const Title = styled.h1`
   font-size: 24px;
   font-weight: bold;
   margin-top: 0;
+  user-select: none;
 `;
 
 const ScoreValue = styled.h1`
@@ -43,47 +44,38 @@ const ScoreValue = styled.h1`
   margin-top: 0px;
   font-weight: bolder;
   color: #71b413;
+  user-select: none;
 `;
 
-const AdditionalScore = styled.span`
-  position: absolute;
-  display: block;
-  font-size: 14px;
-  color: #71b413;
-  left: 0;
-  top: 175px;
-  width: 100%;
-`;
-
-function Window({ children, show, backdropOnClick }) {
-  const AppContainer = document.querySelector(".App");
+const Window = ({ children, show, backdropOnClick }) => {
+  const AppContainer = document.querySelector('.App');
 
   const modalTransition = useTransition(show, null, {
     config: config.wobbly,
-    from: { transform: "translate(-50%, -50%) scale(0)", opacity: 0 },
-    enter: { transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
-    leave: { transform: "translate(-50%, -50%) scale(0)", opacity: 0 }
+    from: { transform: 'translate(-50%, -50%) scale(0)', opacity: 0 },
+    enter: { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+    leave: { transform: 'translate(-50%, -50%) scale(0)', opacity: 0 },
   });
 
-  function handleBackdropOnClick() {
+  const handleBackdropOnClick = () => {
     backdropOnClick && backdropOnClick();
-  }
+  };
 
+  // 親要素のDOM階層の外に追加
   return ReactDOM.createPortal(
     <>
-      {modalTransition.map(({ item, props, key }) => {
-        return (
+      {modalTransition.map(
+        ({ item, props, key }) =>
           item && (
             <ModalContainer key={key} style={props}>
               <ModalBox>{children}</ModalBox>
             </ModalContainer>
           )
-        );
-      })}
+      )}
       {show && <Backdrop onClick={handleBackdropOnClick} />}
     </>,
     AppContainer
   );
-}
+};
 
-export default { Window, Title, ScoreValue, AdditionalScore };
+export default { Window, Title, ScoreValue };

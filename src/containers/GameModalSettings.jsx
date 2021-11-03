@@ -1,62 +1,62 @@
-import React from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import Modal from "./../components/Modal";
-import Button from "./../components/Button";
+import React from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import Modal from './../components/Modal';
+import Button from './../components/Button';
 
-import gameConstants from "./../constants";
-import { restartGame } from "./../actions";
+import gameConstants from './../constants';
+import { initializeGame } from './../actions';
 
-function GameModalSetting(props) {
+const GameModalSetting = ({ onExit, isBlurred }) => {
   const dispatch = useDispatch();
-  const paused = useSelector(state => state.gameStatus.paused, shallowEqual);
+  const paused = useSelector((state) => state.gameStatus.paused, shallowEqual);
 
-  function handleTogglePause() {
+  const handleTogglePause = () => {
     dispatch({
-      type: gameConstants.TOGGLE_PAUSE
+      type: gameConstants.TOGGLE_PAUSE,
     });
-  }
+  };
 
-  function handleRestart() {
-    dispatch(restartGame());
-  }
-  function handleExit() {
-    props.onExit();
-    dispatch(restartGame());
-  }
+  const handleRestart = () => {
+    dispatch(initializeGame());
+  };
+  const handleExit = () => {
+    onExit();
+    dispatch(initializeGame());
+  };
 
   return (
     <>
       <Modal.Window
-        show={paused && !props.isBlurred}
+        show={paused && !isBlurred}
         backdropOnClick={handleTogglePause}
       >
         <Modal.Title>What would you like to do?</Modal.Title>
         <Button primary onClick={handleTogglePause}>
-          <i className="fa fa-fw fa-play" /> Resume
+          <i className='fa fa-fw fa-play' /> Resume
         </Button>
         <Button onClick={handleRestart}>
-          <i className="fa fa-fw fa-repeat" /> Restart
+          <i className='fa fa-fw fa-repeat' /> Restart
         </Button>
         <Button onClick={handleExit}>
-          <i className="fa fa-fw fa-sign-out" /> Exit
+          <i className='fa fa-fw fa-sign-out' /> Exit
         </Button>
       </Modal.Window>
       <Button
         settings
         onClick={handleTogglePause}
         style={{
-          position: "absolute",
-          zIndex: "15",
-          right: "-3px",
-          borderRadius: "8px 0px 0px 8px",
-          top: "50%",
-          transform: "translateY(-50%)"
+          position: 'absolute',
+          zIndex: '15',
+          right: '-3px',
+          borderRadius: '8px 0px 0px 8px',
+          top: '50%',
+          transform: 'translateY(-50%)',
         }}
       >
-        <i className="fa fa-cog" />
+        <i className='fa fa-cog' />
       </Button>
     </>
   );
-}
+};
 
 export default GameModalSetting;

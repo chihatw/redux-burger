@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import { animated as a } from "react-spring";
+import { animated as a } from 'react-spring';
 
-import BottomBun from "./../img/BottomBun.png";
-import TopBun from "./../img/TopBun.png";
-import Plate from "./../img/Plate.png";
+import BottomBun from './../img/BottomBun.png';
+import TopBun from './../img/TopBun.png';
+import Plate from './../img/Plate.png';
 
-import { device } from "./../constants";
+import { device } from './../constants';
 
 const BurgerContainer = styled(a.div)`
   position: absolute;
@@ -191,9 +191,7 @@ const IngredientsContainer = styled.div`
   transform: scale(1) translateY(0px);
   transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   z-index: 3;
-
   will-change: transform;
-
   &.animate {
     transform: scale(1.1) translateY(-10px);
   }
@@ -204,18 +202,18 @@ const Container = React.forwardRef((props, ref) => {
 
   return (
     <BurgerContainer ref={ref}>
-      <TopBunContainer className={`${isDroppable ? " animate" : ""}`}>
-        <img src={TopBun} alt="Top Bun" />
+      <TopBunContainer className={`${isDroppable ? ' animate' : ''}`}>
+        <img src={TopBun} alt='Top Bun' />
       </TopBunContainer>
-      <IngredientsContainer className={`${isDroppable ? "animate" : ""}`}>
+      <IngredientsContainer className={`${isDroppable ? 'animate' : ''}`}>
         {props.children}
       </IngredientsContainer>
 
-      <BottomBunContainer className={`${isDroppable ? " animate" : ""}`}>
-        <img src={BottomBun} alt="Bottom Bun" />
+      <BottomBunContainer className={`${isDroppable ? ' animate' : ''}`}>
+        <img src={BottomBun} alt='Bottom Bun' />
       </BottomBunContainer>
       <PlateContainer>
-        <img src={Plate} alt="Plate" />
+        <img src={Plate} alt='Plate' />
       </PlateContainer>
     </BurgerContainer>
   );

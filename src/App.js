@@ -50,13 +50,13 @@ const GameMainContainer = styled.div`
   }
 `;
 
-function App() {
+const App = () => {
   const [start, setStart] = useState(false);
   const [blurred, setBlurred] = useState(false);
 
   const dispatch = useDispatch();
 
-  const { playing, toggleAudio } = useGameAudio('bg', {
+  const { playing, stopAudio, startAudio } = useGameAudio('bg', {
     loop: true,
   });
 
@@ -65,27 +65,28 @@ function App() {
     shallowEqual
   );
 
-  function handleGame(bool) {
-    return function () {
-      setStart(bool);
-      toggleAudio();
-    };
-  }
+  const startGame = () => {
+    setStart(true);
+    startAudio();
+  };
+
+  const stopGame = () => {
+    setStart(false);
+    stopAudio();
+  };
 
   useEffect(() => {
-    function onBlur() {
+    const onBlur = () => {
       setBlurred(true);
-      if (playing) {
-        toggleAudio();
-      }
-    }
+      playing && stopAudio();
+    };
 
-    function onFocus() {
+    const onFocus = () => {
       setBlurred(false);
       if (!playing && start) {
-        toggleAudio();
+        startAudio();
       }
-    }
+    };
 
     dispatch({
       type: gameConstants.SET_PAUSE,
@@ -99,22 +100,29 @@ function App() {
       window.removeEventListener('blur', onBlur);
       window.removeEventListener('focus', onFocus);
     };
-  }, [start, playing, blurred, dispatch, toggleAudio]);
+  }, [start, playing, blurred, dispatch, stopAudio, startAudio]);
 
   return (
-    <div className='App'>
+    <div
+      className='App'
+      style={{
+        overflow: 'hidden',
+        width: '100%',
+        height: '100%',
+        position: 'fixed',
+        textAlign: 'center',
+        color: '#6d6d6d',
+      }}
+    >
       <GameMainContainer>
         {!start ? (
-          <GameWelcomeScreen onStart={handleGame(true)} />
+          <GameWelcomeScreen onStart={startGame} />
         ) : (
           <>
             {!loading && (
               <>
-                <GameModalResult onExit={handleGame(false)} />
-                <GameModalSettings
-                  onExit={handleGame(false)}
-                  isBlurred={blurred}
-                />
+                <GameModalResult onExit={stopGame} />
+                <GameModalSettings onExit={stopGame} isBlurred={blurred} />
                 <GameDroppableArea />
                 <GameStars />
                 <GameLives />
@@ -132,6 +140,6 @@ function App() {
       </GameMainContainer>
     </div>
   );
-}
+};
 
 export default App;

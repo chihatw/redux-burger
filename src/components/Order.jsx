@@ -22,8 +22,6 @@ const Container = styled(a.div)`
 const ItemWrapper = styled(a.div)`
   width: 100%;
   height: 44px;
-  box-sizing: border-box;
-  border-radius: 8px;
   position: relative;
   overflow: visible;
   will-change: transform, height, opacity;
@@ -31,29 +29,14 @@ const ItemWrapper = styled(a.div)`
 
 const ItemContent = styled(a.div)`
   background-color: #fff;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  outline: #ccc solid 1px;
   display: flex;
   align-items: center;
   padding: 8px;
   border-radius: 8px;
 `;
 
-const Label = styled.div``;
-
-const Image = styled.div`
-  width: 30px;
-  margin-right: 8px;
-
-  img {
-    width: 100%;
-  }
-`;
-
-const Count = styled.div`
-  margin-left: auto;
-`;
-
-function usePrevious(value) {
+const usePrevious = (value) => {
   const ref = useRef();
 
   useEffect(() => {
@@ -61,11 +44,11 @@ function usePrevious(value) {
   });
 
   return ref.current;
-}
+};
 
-function Item(props) {
+const Item = ({ style, count, children }) => {
   const [animate, setAnimate] = useState(false);
-  const prevCount = usePrevious(props.count);
+  const prevCount = usePrevious(count);
 
   const contentProps = useSpring({
     config: {
@@ -80,7 +63,7 @@ function Item(props) {
 
     if (animate) clearTimeout(timeout);
 
-    if (prevCount > props.count && props.count !== 0) {
+    if (prevCount > count && count !== 0) {
       setAnimate(true);
     }
 
@@ -89,14 +72,13 @@ function Item(props) {
     }, 200);
 
     return () => clearTimeout(timeout);
-    // ここに animate 入れて無限ループにならないの？
-  }, [props.count, prevCount, animate]);
+  }, [count, prevCount, animate]);
 
   return (
-    <ItemWrapper {...props}>
-      <ItemContent style={contentProps}>{props.children}</ItemContent>
+    <ItemWrapper style={{ ...style }}>
+      <ItemContent style={contentProps}>{children}</ItemContent>
     </ItemWrapper>
   );
-}
+};
 
-export default { Container, Item, Count, Label, Image };
+export default { Container, Item };

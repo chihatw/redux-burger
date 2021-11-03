@@ -6,9 +6,10 @@ import useGameAudio from './../hooks/useGameAudio';
 
 import Timer from './../components/Timer';
 
-function GameTimer() {
+const GameTimer = () => {
   const dispatch = useDispatch();
-  const { playing, toggleAudio, restartAudio } = useGameAudio('countdown');
+  const { playing, resetCurrentTime, stopAudio, startAudio } =
+    useGameAudio('countdown');
   const time = useSelector((state) => state.gameStatus.time, shallowEqual);
   const lives = useSelector((state) => state.gameStatus.lives, shallowEqual);
   const paused = useSelector((state) => state.gameStatus.paused, shallowEqual);
@@ -19,21 +20,32 @@ function GameTimer() {
     if (!interval) {
       interval = setInterval(() => {
         if (time > 0 && lives !== 0 && !paused) {
-          if (time <= 7 && !playing) toggleAudio();
+          if (time <= 7 && !playing) {
+            startAudio();
+          }
           dispatch({ type: gameConstants.UPDATE_TIME, payload: time - 1 });
         } else {
           if (playing) {
-            toggleAudio();
+            stopAudio();
           }
 
-          restartAudio();
+          resetCurrentTime();
           clearInterval(interval);
         }
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [time, lives, paused, playing, toggleAudio, dispatch, restartAudio]);
+  }, [
+    time,
+    lives,
+    paused,
+    playing,
+    dispatch,
+    startAudio,
+    stopAudio,
+    resetCurrentTime,
+  ]);
 
   return (
     <>
@@ -45,6 +57,6 @@ function GameTimer() {
       </Timer.Container>
     </>
   );
-}
+};
 
 export default GameTimer;

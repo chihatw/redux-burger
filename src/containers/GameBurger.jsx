@@ -5,7 +5,11 @@ import { useDrop } from 'react-dnd';
 
 import Burger from '../components/Burger';
 
-function AnimatedBurger() {
+const randomAxisX = () => {
+  return Math.floor(Math.random() * 16) - 8;
+};
+
+const AnimatedBurger = () => {
   const burgers = useSelector(
     (state) => state.gameStatus.burgers,
     shallowEqual
@@ -41,35 +45,27 @@ function AnimatedBurger() {
     }
   );
 
-  function randomAxisX() {
-    return Math.floor(Math.random() * 16) - 8;
-  }
-
-  function renderAnimatedBurgerIngredients() {
-    return ingredientTransition.map(({ item, props, key }, index) => (
-      <Burger.Ingredient
-        key={key}
-        className={item.className}
-        style={{
-          zIndex: burgers[burgerIndex].ingredients.length - index,
-          ...props,
-        }}
-      >
-        <img src={require(`../img/${item.name}.png`)} alt={item.name} />
-      </Burger.Ingredient>
-    ));
-  }
-
   return (
     <Burger.Container dragStatus={{ canDrop }}>
       <Burger.IngredientsList>
-        {renderAnimatedBurgerIngredients()}
+        {ingredientTransition.map(({ item, props, key }, index) => (
+          <Burger.Ingredient
+            key={key}
+            className={item.className}
+            style={{
+              zIndex: burgers[burgerIndex].ingredients.length - index,
+              ...props,
+            }}
+          >
+            <img src={require(`../img/${item.name}.png`)} alt={item.name} />
+          </Burger.Ingredient>
+        ))}
       </Burger.IngredientsList>
     </Burger.Container>
   );
-}
+};
 
-function GameBurger() {
+const GameBurger = () => {
   const burgerIndex = useSelector(
     (state) => state.gameStatus.burgerIndex,
     shallowEqual
@@ -82,15 +78,15 @@ function GameBurger() {
     leave: { transform: 'translateY(-100%)' },
   });
 
-  function renderAnimatedBurgerList() {
-    return burgerTransition.map(({ props, key }) => (
-      <Burger.SliderContainer key={key} style={props}>
-        <AnimatedBurger />
-      </Burger.SliderContainer>
-    ));
-  }
-
-  return <>{renderAnimatedBurgerList()}</>;
-}
+  return (
+    <>
+      {burgerTransition.map(({ props, key }) => (
+        <Burger.SliderContainer key={key} style={props}>
+          <AnimatedBurger />
+        </Burger.SliderContainer>
+      ))}
+    </>
+  );
+};
 
 export default GameBurger;

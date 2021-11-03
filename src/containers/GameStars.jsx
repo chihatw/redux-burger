@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
-import { useTransition } from 'react-spring';
-
+import { animated as a, useTransition } from 'react-spring';
 import { easeCircleOut } from 'd3-ease';
-
 import Star from '../img/Star.png';
-import Stars from '../components/Stars';
 
-function GameStars() {
+const GameStars = () => {
   const numOfBurgers = useSelector(
     (state) => state.gameStatus.burgers.length,
     shallowEqual
@@ -35,42 +32,68 @@ function GameStars() {
 
   const [stars, setStars] = useState([]);
   const starsTransition = useTransition(stars, (item) => item.id, {
-    config: { duration: 2000, easing: easeCircleOut },
+    config: {
+      duration: 2000,
+      easing: easeCircleOut,
+    },
     from: { transform: `translate(0px, 0px) scale(1.5)`, opacity: 1 },
     enter: { transform: `translate(0px, 0px) scale(1.5)`, opacity: 1 },
     leave: (item) => ({
-      transform: `translate(${item.x}px, ${item.y}px) scale(${0})`,
+      transform: `translate(${item.x}px, ${item.y}px) scale(0)`,
       opacity: 0.5,
     }),
   });
 
   useEffect(() => {
-    let timeout;
+    const start = performance.now();
+    let req;
+    // numOfBurgersが 1 以下の時は星を表示しない
+    setStars(numOfBurgers > 1 ? (winStreak > 1 ? manyStars : fewStars) : []);
 
-    setStars(numOfBurgers > 1 ? (winStreak > 3 ? manyStars : fewStars) : []);
+    const resetStars = (timestamp) => {
+      if (timestamp - start > 100) {
+        setStars([]);
+      } else {
+        req = requestAnimationFrame(resetStars);
+      }
+    };
+    resetStars();
+    return () => cancelAnimationFrame(req);
 
-    timeout = setTimeout(() => {
-      setStars([]);
-    }, 100);
-
-    return () => clearTimeout(timeout);
     // ここにstarを含めたら無限ループになる
-    // useRef?
     // eslint-disable-next-line
   }, [numOfBurgers]);
 
-  function renderStars() {
-    return starsTransition.map(
-      ({ item, props, key }) =>
-        item && (
-          <Stars.Star key={key} style={props} duration={item.duration}>
-            <img src={Star} alt='Stars' />
-          </Stars.Star>
-        )
-    );
-  }
-
-  return <Stars.Container>{renderStars()}</Stars.Container>;
-}
+  return (
+    <a.div
+      style={{
+        position: 'absolute',
+        zIndex: 100,
+        bottom: 300,
+        width: 100,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        pointerEvents: 'none',
+      }}
+    >
+      {starsTransition.map(
+        ({ item, props, key }) =>
+          item && (
+            <a.div key={key} style={{ position: 'absolute', ...props }}>
+              <img
+                src={Star}
+                alt='Stars'
+                style={{
+                  width: 100,
+                  willChange: 'transform',
+                  animation: `star-spin infinite ${item.duration || 5}s linear`,
+                }}
+              />
+            </a.div>
+          )
+      )}
+    </a.div>
+  );
+};
 
 export default GameStars;

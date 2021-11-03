@@ -1,7 +1,7 @@
-import { animated as a } from "react-spring";
-import styled, { keyframes } from "styled-components";
+import { animated as a } from 'react-spring';
+import styled, { keyframes } from 'styled-components';
 
-import { device } from "./../constants";
+import { device } from './../constants';
 
 const Container = styled(a.div)`
   position: absolute;
@@ -12,19 +12,10 @@ const Container = styled(a.div)`
   top: 48px;
   right: 8px;
   z-index: 10;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 158, 0, 1) 0%,
-    rgba(253, 114, 0, 1) 100%
-  );
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  background: orange;
 
   &.danger {
-    background: linear-gradient(
-      to bottom,
-      rgb(255, 0, 0) 0%,
-      rgb(154, 0, 0) 100%
-    );
+    background: red;
   }
 
   @media ${device.mobileL} {

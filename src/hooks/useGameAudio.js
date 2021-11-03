@@ -24,8 +24,10 @@ Object.keys(gameAudio).forEach((key) => {
   gameAudio[key].preload = 'auto';
 });
 
-function useGameAudio(name, opt) {
+// opt は BGM に {loop: true} を設定するため
+const useGameAudio = (name, opt) => {
   const [playing, toggle] = useState(false);
+  // audio に基本の Audioを設定
   const [audio] = useState(gameAudio[name]);
 
   if (opt) {
@@ -35,31 +37,37 @@ function useGameAudio(name, opt) {
   }
 
   useEffect(() => {
-    if (playing) {
-      audio.play();
-    } else audio.pause();
+    if (playing) audio.play();
+    else audio.pause();
   }, [playing, audio]);
 
-  function playOnEveryInteraction(other) {
+  // otherの設定がなければ、既存の audio を再生
+  // 既存 audio以外の場合、otherで設定（「誤答音」等）
+  const playOnEveryInteraction = (other) => {
     const clonedAudio = (gameAudio[other] || audio).cloneNode();
     clonedAudio.play();
-  }
+  };
 
-  function restartAudio() {
+  const resetCurrentTime = () => {
     audio.currentTime = 0;
-  }
+  };
 
-  function toggleAudio() {
-    toggle(!playing);
-  }
+  const stopAudio = () => {
+    toggle(false);
+  };
+
+  const startAudio = () => {
+    toggle(true);
+  };
 
   return {
-    playing,
     toggle,
+    playing,
+    stopAudio,
+    startAudio,
+    resetCurrentTime,
     playOnEveryInteraction,
-    restartAudio,
-    toggleAudio,
   };
-}
+};
 
 export default useGameAudio;

@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { FacebookShareButton } from "react-share";
-import Modal from "./../components/Modal";
-import Button from "./../components/Button";
-import { restartGame } from "./../actions";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import Modal from './../components/Modal';
+import Button from './../components/Button';
+import { initializeGame } from './../actions';
 
-function GameModalResult(props) {
+const GameModalResult = ({ onExit }) => {
+  // redux toolkit の場合、 createReducer? createSlice? を使う
   const dispatch = useDispatch();
 
   const [showModal, setShowModal] = useState(false);
-  const score = useSelector(state => state.gameStatus.score, shallowEqual);
-  const lives = useSelector(state => state.gameStatus.lives, shallowEqual);
-  const time = useSelector(state => state.gameStatus.time, shallowEqual);
-  const multiplier = time === 0 && score > 0 ? 10 : 0;
-  const additionalScore = lives * multiplier;
-  const finalScore = score + additionalScore;
+
+  const score = useSelector((state) => state.gameStatus.score, shallowEqual);
+  const lives = useSelector((state) => state.gameStatus.lives, shallowEqual);
+  const time = useSelector((state) => state.gameStatus.time, shallowEqual);
 
   useEffect(() => {
     if (lives === 0 || time === 0) {
@@ -22,42 +20,32 @@ function GameModalResult(props) {
     }
   }, [lives, time, showModal]);
 
-  function handlePlayAgain() {
+  const handlePlayAgain = () => {
     setShowModal(false);
-    dispatch(restartGame());
-  }
-  function handleExit() {
-    props.onExit();
+    dispatch(initializeGame());
+  };
+  const handleExit = () => {
+    onExit();
     setShowModal(false);
-    dispatch(restartGame());
-  }
+    dispatch(initializeGame());
+  };
 
   return (
     <Modal.Window show={showModal}>
       <Modal.Title>
-        {lives === 0 ? "Better luck next time!" : "Time's up!"}
+        {lives === 0 ? 'Better luck next time!' : "Time's up!"}
       </Modal.Title>
 
-      <h3>Your score is:</h3>
-      <Modal.ScoreValue>{finalScore}</Modal.ScoreValue>
-      <Modal.AdditionalScore>{`Additional score: ${additionalScore}`}</Modal.AdditionalScore>
+      <h3 style={{ userSelect: 'none' }}>Your score is:</h3>
+      <Modal.ScoreValue>{score}</Modal.ScoreValue>
       <Button primary onClick={handlePlayAgain}>
-        <i className="fa fa-fw fa-play" /> Play again!
+        <i className='fa fa-fw fa-play' /> Play again!
       </Button>
-      <FacebookShareButton
-        style={{ display: "inline-block" }}
-        url={"https://monjason23.github.io/burger-dash/"}
-        quote={`My score is ${finalScore}. Can you beat me?`}
-      >
-        <Button social>
-          <i className="fa fa-fw fa-facebook-square" /> Share
-        </Button>
-      </FacebookShareButton>
       <Button onClick={handleExit}>
-        <i className="fa fa-fw fa-sign-out" /> Exit
+        <i className='fa fa-fw fa-sign-out' /> Exit
       </Button>
     </Modal.Window>
   );
-}
+};
 
 export default GameModalResult;
