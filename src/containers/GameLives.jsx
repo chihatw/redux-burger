@@ -11,22 +11,24 @@ const GameLives = () => {
 
   const heartTransition = useTransition(
     [...new Array(lives).keys()], // [0, 1, 2]
-    (item) => item,
     {
       config: config.wobbly,
-      from: { transform: 'scale(0)', opacity: 1 },
-      enter: { transform: 'scale(1)', opacity: 1 },
-      leave: { transform: 'scale(0)', opacity: 0 },
+      from: { scale: 0, opacity: 1 },
+      enter: { scale: 1, opacity: 1 },
+      leave: { scale: 0, opacity: 0 },
     }
   );
 
   return (
     <Lives.Container>
-      {heartTransition.map(({ props, key }) => (
-        <Lives.Heart style={props} key={key}>
-          <img src={Heart} alt='Heart' />
-        </Lives.Heart>
-      ))}
+      {heartTransition(
+        (styles, item) =>
+          Number.isInteger(item) && (
+            <Lives.Heart style={styles}>
+              <img src={Heart} alt='Heart' />
+            </Lives.Heart>
+          )
+      )}
     </Lives.Container>
   );
 };

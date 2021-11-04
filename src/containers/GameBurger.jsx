@@ -27,39 +27,41 @@ const AnimatedBurger = () => {
     }),
   });
 
-  const ingredientTransition = useTransition(
-    burgers[burgerIndex].ingredients,
-    (item) => item.key,
-    {
-      config: config.wobbly,
-      from: {
-        height: 0,
-        opacity: 0.7,
-        transform: 'translate3d(0px, -10px, 0px) scale(1.5)',
-      },
-      enter: (item) => ({
-        height: item.height,
-        opacity: 1,
-        transform: `translate3d(${randomAxisX()}px, 0px, 0px) scale(1)`,
-      }),
-    }
-  );
+  const ingredientTransition = useTransition(burgers[burgerIndex].ingredients, {
+    config: config.wobbly,
+    from: {
+      height: 0,
+      opacity: 0.7,
+      x: 0,
+      y: -10,
+      scale: 1.5,
+    },
+    enter: (item) => ({
+      height: item.height,
+      opacity: 1,
+      x: randomAxisX(),
+      y: 0,
+      scale: 1,
+    }),
+  });
 
   return (
     <Burger.Container dragStatus={{ canDrop }}>
       <Burger.IngredientsList>
-        {ingredientTransition.map(({ item, props, key }, index) => (
-          <Burger.Ingredient
-            key={key}
-            className={item.className}
-            style={{
-              zIndex: burgers[burgerIndex].ingredients.length - index,
-              ...props,
-            }}
-          >
-            <img src={require(`../img/${item.name}.png`)} alt={item.name} />
-          </Burger.Ingredient>
-        ))}
+        {ingredientTransition(
+          (styles, item, k, index) =>
+            item && (
+              <Burger.Ingredient
+                className={item.className}
+                style={{
+                  zIndex: burgers[burgerIndex].ingredients.length - index,
+                  ...styles,
+                }}
+              >
+                <img src={require(`../img/${item.name}.png`)} alt={item.name} />
+              </Burger.Ingredient>
+            )
+        )}
       </Burger.IngredientsList>
     </Burger.Container>
   );
@@ -71,20 +73,23 @@ const GameBurger = () => {
     shallowEqual
   );
 
-  const burgerTransition = useTransition(burgerIndex, (item) => item, {
+  const burgerTransition = useTransition(burgerIndex, {
     config: config.wobbly,
-    from: { transform: 'translateX(100%)' },
-    enter: { transform: 'translateY(0%)' },
-    leave: { transform: 'translateY(-100%)' },
+    from: { x: '100%' },
+    enter: { x: '0%' },
+    leave: { x: '-100%' },
   });
 
   return (
     <>
-      {burgerTransition.map(({ props, key }) => (
-        <Burger.SliderContainer key={key} style={props}>
-          <AnimatedBurger />
-        </Burger.SliderContainer>
-      ))}
+      {burgerTransition(
+        (styles, item) =>
+          Number.isInteger(item) && (
+            <Burger.SliderContainer style={styles}>
+              <AnimatedBurger />
+            </Burger.SliderContainer>
+          )
+      )}
     </>
   );
 };

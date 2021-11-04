@@ -12,9 +12,7 @@ const GameScore = () => {
     <>
       <Score.Container>
         <Score.Header>Your score</Score.Header>
-        <Score.Value>
-          {animatedScore.value.interpolate((x) => x.toFixed(0))}
-        </Score.Value>
+        <Score.Value>{animatedScore.value.to((x) => x.toFixed(0))}</Score.Value>
       </Score.Container>
     </>
   );

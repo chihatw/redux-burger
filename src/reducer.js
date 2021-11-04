@@ -8,13 +8,13 @@ const gameInitialStatus = {
   burgers: [{ ingredients: [] }],
   burgerIndex: 0,
   score: 0,
-  time: 10,
+  time: 60,
   lives: 3,
   loading: false,
   exactOrder: true,
   paused: false,
   winStreak: 1,
-  orders: helpers.randomizeOrder(2, IngredientsArray),
+  orders: helpers.randomizeOrder(1, IngredientsArray),
 };
 
 const gameStatus = (state = gameInitialStatus, action) => {

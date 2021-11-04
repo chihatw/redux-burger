@@ -50,11 +50,11 @@ const ScoreValue = styled.h1`
 const Window = ({ children, show, backdropOnClick }) => {
   const AppContainer = document.querySelector('.App');
 
-  const modalTransition = useTransition(show, null, {
+  const modalTransition = useTransition(show, {
     config: config.wobbly,
-    from: { transform: 'translate(-50%, -50%) scale(0)', opacity: 0 },
-    enter: { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
-    leave: { transform: 'translate(-50%, -50%) scale(0)', opacity: 0 },
+    from: { scale: 0, opacity: 0 },
+    enter: { scale: 1, opacity: 1 },
+    leave: { scale: 0, opacity: 0 },
   });
 
   const handleBackdropOnClick = () => {
@@ -64,10 +64,10 @@ const Window = ({ children, show, backdropOnClick }) => {
   // 親要素のDOM階層の外に追加
   return ReactDOM.createPortal(
     <>
-      {modalTransition.map(
-        ({ item, props, key }) =>
+      {modalTransition(
+        (styles, item) =>
           item && (
-            <ModalContainer key={key} style={props}>
+            <ModalContainer style={{ ...styles, x: '-50%', y: '-50%' }}>
               <ModalBox>{children}</ModalBox>
             </ModalContainer>
           )

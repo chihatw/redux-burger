@@ -50,12 +50,9 @@ const Item = ({ style, count, children }) => {
   const [animate, setAnimate] = useState(false);
   const prevCount = usePrevious(count);
 
-  const contentProps = useSpring({
-    config: {
-      duration: 300,
-      easing: easeBackOut,
-    },
-    transform: animate ? 'scale(1.3)' : 'scale(1)',
+  const styles = useSpring({
+    config: { duration: 300, easing: easeBackOut },
+    scale: animate ? 1.3 : 1,
   });
 
   useEffect(() => {
@@ -76,7 +73,7 @@ const Item = ({ style, count, children }) => {
 
   return (
     <ItemWrapper style={{ ...style }}>
-      <ItemContent style={contentProps}>{children}</ItemContent>
+      <ItemContent style={styles}>{children}</ItemContent>
     </ItemWrapper>
   );
 };

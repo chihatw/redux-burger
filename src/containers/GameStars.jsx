@@ -31,24 +31,18 @@ const GameStars = () => {
   ];
 
   const [stars, setStars] = useState([]);
-  const starsTransition = useTransition(stars, (item) => item.id, {
-    config: {
-      duration: 2000,
-      easing: easeCircleOut,
-    },
-    from: { transform: `translate(0px, 0px) scale(1.5)`, opacity: 1 },
-    enter: { transform: `translate(0px, 0px) scale(1.5)`, opacity: 1 },
-    leave: (item) => ({
-      transform: `translate(${item.x}px, ${item.y}px) scale(0)`,
-      opacity: 0.5,
-    }),
+  const starsTransition = useTransition(stars, {
+    config: { duration: 2000, easing: easeCircleOut },
+    from: { x: 0, y: 0, scale: 1.5, opacity: 1 },
+    enter: { x: 0, y: 0, scale: 1.5, opacity: 1 },
+    leave: (item) => ({ x: item.x, y: item.y, scale: 0, opacity: 0.5 }),
   });
 
   useEffect(() => {
     const start = performance.now();
     let req;
     // numOfBurgersが 1 以下の時は星を表示しない
-    setStars(numOfBurgers > 1 ? (winStreak > 1 ? manyStars : fewStars) : []);
+    setStars(numOfBurgers > 1 ? (winStreak > 3 ? manyStars : fewStars) : []);
 
     const resetStars = (timestamp) => {
       if (timestamp - start > 100) {
@@ -76,10 +70,10 @@ const GameStars = () => {
         pointerEvents: 'none',
       }}
     >
-      {starsTransition.map(
-        ({ item, props, key }) =>
+      {starsTransition(
+        (styles, item) =>
           item && (
-            <a.div key={key} style={{ position: 'absolute', ...props }}>
+            <a.div style={{ position: 'absolute', ...styles }}>
               <img
                 src={Star}
                 alt='Stars'
