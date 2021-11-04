@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import Modal from './../components/Modal';
+import * as Modal from './../components/Modal';
 import Button from './../components/Button';
 
 import gameConstants from './../constants';

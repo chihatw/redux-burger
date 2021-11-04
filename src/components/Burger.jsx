@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { animated as a } from 'react-spring';
+import { animated } from 'react-spring';
 
 import BottomBun from './../img/BottomBun.png';
 import TopBun from './../img/TopBun.png';
@@ -9,7 +9,7 @@ import Plate from './../img/Plate.png';
 
 import { device } from './../constants';
 
-const BurgerContainer = styled(a.div)`
+const BurgerContainer = styled(animated.div)`
   position: absolute;
   bottom: 140px;
   width: 310px;
@@ -28,14 +28,14 @@ const BurgerContainer = styled(a.div)`
   }
 `;
 
-const IngredientsList = styled.ul`
+export const IngredientsList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
   width: 350px;
 `;
 
-const Ingredient = styled(a.li)`
+export const Ingredient = styled(animated.li)`
   position: relative;
   z-index: 1;
   height: 30px;
@@ -49,7 +49,7 @@ const Ingredient = styled(a.li)`
   }
 
   &.ing-cheese {
-    height: 5;
+    height: 5px;
     img {
       width: 230px;
     }
@@ -122,7 +122,7 @@ const Ingredient = styled(a.li)`
   }
 `;
 
-const TopBunContainer = styled(a.div)`
+const TopBunContainer = styled(animated.div)`
   position: relative;
   z-index: 100;
   width: 210px;
@@ -162,7 +162,7 @@ const BottomBunContainer = styled(TopBunContainer)`
   }
 `;
 
-const PlateContainer = styled(a.div)`
+const PlateContainer = styled(animated.div)`
   position: absolute;
   width: 360px;
   bottom: -64px;
@@ -178,7 +178,7 @@ const PlateContainer = styled(a.div)`
   }
 `;
 
-const SliderContainer = styled(a.div)`
+export const SliderContainer = styled(animated.div)`
   position: absolute;
   width: 100%;
   left: 0;
@@ -197,7 +197,7 @@ const IngredientsContainer = styled.div`
   }
 `;
 
-const Container = React.forwardRef((props, ref) => {
+export const Container = React.forwardRef((props, ref) => {
   const isDroppable = props.dragStatus.canDrop;
 
   return (
@@ -218,5 +218,3 @@ const Container = React.forwardRef((props, ref) => {
     </BurgerContainer>
   );
 });
-
-export default { Container, IngredientsList, Ingredient, SliderContainer };

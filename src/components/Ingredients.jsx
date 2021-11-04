@@ -1,9 +1,9 @@
-import { animated as a } from "react-spring";
-import styled from "styled-components";
+import { animated } from 'react-spring';
+import styled from 'styled-components';
 
-import { device } from "./../constants";
+import { device } from './../constants';
 
-const Container = styled.div`
+export const Container = styled.div`
   position: absolute;
   border-top-right-radius: 8px;
   border-top-left-radius: 8px;
@@ -27,7 +27,7 @@ const Container = styled.div`
   }
 `;
 
-const Item = styled(a.div)`
+export const Item = styled(animated.div)`
   position: relative;
   width: 72px;
   cursor: grab;
@@ -44,7 +44,7 @@ const Item = styled(a.div)`
   }
 `;
 
-const ItemMobileDragHandler = styled.div`
+export const ItemMobileDragHandler = styled.div`
   position: relative;
   will-change: transform;
 
@@ -60,5 +60,3 @@ const ItemMobileDragHandler = styled.div`
     }
   }
 `;
-
-export default { Container, Item, ItemMobileDragHandler };

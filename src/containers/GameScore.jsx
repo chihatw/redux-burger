@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useSpring } from 'react-spring';
 
-import Score from './../components/Score';
+import * as Score from './../components/Score';
 
 const GameScore = () => {
   const score = useSelector((state) => state.gameStatus.score, shallowEqual);

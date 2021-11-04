@@ -4,6 +4,8 @@ import styled from 'styled-components';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
+import Bg from './img/bg.png';
+
 import GameBurger from './containers/GameBurger';
 import GameIngredients from './containers/GameIngredients';
 import GameOrder from './containers/GameOrder';
@@ -136,7 +138,7 @@ const App = () => {
           </>
         )}
 
-        <img className='bg' src={require('./img/bg.png')} alt='' />
+        <img className='bg' src={Bg} alt='' />
       </GameMainContainer>
     </div>
   );

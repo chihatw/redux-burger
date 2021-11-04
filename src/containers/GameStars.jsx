@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
-import { animated as a, useTransition } from 'react-spring';
+import { animated } from 'react-spring';
 import { easeCircleOut } from 'd3-ease';
 import Star from '../img/Star.png';
+import { Transition } from '@react-spring/core';
 
 const GameStars = () => {
   const numOfBurgers = useSelector(
@@ -31,12 +32,6 @@ const GameStars = () => {
   ];
 
   const [stars, setStars] = useState([]);
-  const starsTransition = useTransition(stars, {
-    config: { duration: 2000, easing: easeCircleOut },
-    from: { x: 0, y: 0, scale: 1.5, opacity: 1 },
-    enter: { x: 0, y: 0, scale: 1.5, opacity: 1 },
-    leave: (item) => ({ x: item.x, y: item.y, scale: 0, opacity: 0.5 }),
-  });
 
   useEffect(() => {
     const start = performance.now();
@@ -59,7 +54,7 @@ const GameStars = () => {
   }, [numOfBurgers]);
 
   return (
-    <a.div
+    <div
       style={{
         position: 'absolute',
         zIndex: 100,
@@ -68,12 +63,21 @@ const GameStars = () => {
         left: '50%',
         transform: 'translateX(-50%)',
         pointerEvents: 'none',
+        background: 'red',
       }}
     >
-      {starsTransition(
-        (styles, item) =>
+      <Transition
+        items={stars}
+        config={{ duration: 2000, easing: easeCircleOut }}
+        from={{ x: 0, y: 0, scale: 1.5, opacity: 1 }}
+        enter={{ x: 0, y: 0, scale: 1.5, opacity: 1 }}
+        leave={(item) => ({ x: item.x, y: item.y, scale: 0, opacity: 0.5 })}
+      >
+        {({ x, y, scale, opacity }, item) =>
           item && (
-            <a.div style={{ position: 'absolute', ...styles }}>
+            <animated.div
+              style={{ position: 'absolute', x, y, scale, opacity }}
+            >
               <img
                 src={Star}
                 alt='Stars'
@@ -83,10 +87,11 @@ const GameStars = () => {
                   animation: `star-spin infinite ${item.duration || 5}s linear`,
                 }}
               />
-            </a.div>
+            </animated.div>
           )
-      )}
-    </a.div>
+        }
+      </Transition>
+    </div>
   );
 };
 

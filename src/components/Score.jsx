@@ -1,9 +1,9 @@
-import Timer from './Timer';
+import * as Timer from './Timer';
 import styled from 'styled-components';
 
 import { device } from './../constants';
 
-const Container = styled(Timer.Container)`
+export const Container = styled(Timer.Container)`
   top: 120px;
   background: #52a2aa;
   @media ${device.mobileL} {
@@ -11,8 +11,6 @@ const Container = styled(Timer.Container)`
   }
 `;
 
-const Header = styled(Timer.Header)``;
+export const Header = styled(Timer.Header)``;
 
-const Value = styled(Timer.Value)``;
-
-export default { Container, Header, Value };
+export const Value = styled(Timer.Value)``;

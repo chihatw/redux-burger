@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { animated as a } from "react-spring";
+import styled from 'styled-components';
+import { animated } from 'react-spring';
 
-const Container = styled(a.div)`
+export const Container = styled(animated.div)`
   position: absolute;
   display: flex;
   flex-direction: row-reverse;
@@ -12,7 +12,7 @@ const Container = styled(a.div)`
   padding: 2px 4px;
 `;
 
-const Heart = styled(a.div)`
+export const Heart = styled(animated.div)`
   position: relative;
   transform-origin: center center;
   border-radius: 50%;
@@ -33,5 +33,3 @@ const Heart = styled(a.div)`
     margin: auto;
   }
 `;
-
-export default { Container, Heart };

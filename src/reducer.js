@@ -14,7 +14,7 @@ const gameInitialStatus = {
   exactOrder: true,
   paused: false,
   winStreak: 1,
-  orders: helpers.randomizeOrder(1, IngredientsArray),
+  orders: helpers.randomizeOrder(2, IngredientsArray),
 };
 
 const gameStatus = (state = gameInitialStatus, action) => {

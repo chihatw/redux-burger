@@ -1,16 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
 
-export default () => {
-  //cross-browser compatible
-  const height =
-    window.innerHeight ||
-    document.documentElement.clientHeight ||
-    document.body.clientHeight;
-  const width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth;
+const useViewPort = () => {
+  const height = window.innerHeight;
+  const width = window.innerWidth;
   const [windowDimensions, setWindowDimensions] = useState({ height, width });
+
   const deriveWindowDimensions = useCallback(() => {
     setWindowDimensions({ height, width });
   }, [height, width]);
@@ -26,3 +20,5 @@ export default () => {
 
   return [windowDimensions];
 };
+
+export default useViewPort;

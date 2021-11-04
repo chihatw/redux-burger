@@ -1,9 +1,9 @@
-import { animated as a } from 'react-spring';
+import { animated } from 'react-spring';
 import styled, { keyframes } from 'styled-components';
 
 import { device } from './../constants';
 
-const Container = styled(a.div)`
+export const Container = styled(animated.div)`
   position: absolute;
   width: 140px;
   border-radius: 8px;
@@ -23,7 +23,7 @@ const Container = styled(a.div)`
   }
 `;
 
-const Header = styled.h1`
+export const Header = styled.h1`
   text-align: center;
   font-size: 14px;
   color: #fff;
@@ -39,7 +39,7 @@ const pulse = keyframes`
   }
 `;
 
-const Value = styled(a.span)`
+export const Value = styled(animated.span)`
   text-align: center;
   display: block;
   font-size: 24px;
@@ -55,5 +55,3 @@ const Value = styled(a.span)`
     font-size: 48px;
   }
 `;
-
-export default { Container, Header, Value };

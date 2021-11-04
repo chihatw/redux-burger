@@ -2,28 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
-import { useTransition, animated as a, config } from 'react-spring';
-
-const Backdrop = styled.div`
-  position: absolute;
-  z-index: 200;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
-
-const ModalContainer = styled(a.div)`
-  position: absolute;
-  box-sizing: border-box;
-  width: 450px;
-  max-width: 100%;
-  max-height: 100%;
-  padding: 16px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 300;
-`;
+import { Transition, animated, config } from 'react-spring';
 
 const ModalBox = styled.div`
   background-color: #fff;
@@ -32,14 +11,14 @@ const ModalBox = styled.div`
   padding: 16px;
 `;
 
-const Title = styled.h1`
+export const Title = styled.h1`
   font-size: 24px;
   font-weight: bold;
   margin-top: 0;
   user-select: none;
 `;
 
-const ScoreValue = styled.h1`
+export const ScoreValue = styled.h1`
   font-size: 48px;
   margin-top: 0px;
   font-weight: bolder;
@@ -47,15 +26,8 @@ const ScoreValue = styled.h1`
   user-select: none;
 `;
 
-const Window = ({ children, show, backdropOnClick }) => {
+export const Window = ({ children, show, backdropOnClick }) => {
   const AppContainer = document.querySelector('.App');
-
-  const modalTransition = useTransition(show, {
-    config: config.wobbly,
-    from: { scale: 0, opacity: 0 },
-    enter: { scale: 1, opacity: 1 },
-    leave: { scale: 0, opacity: 0 },
-  });
 
   const handleBackdropOnClick = () => {
     backdropOnClick && backdropOnClick();
@@ -64,18 +36,55 @@ const Window = ({ children, show, backdropOnClick }) => {
   // 親要素のDOM階層の外に追加
   return ReactDOM.createPortal(
     <>
-      {modalTransition(
-        (styles, item) =>
-          item && (
-            <ModalContainer style={{ ...styles, x: '-50%', y: '-50%' }}>
-              <ModalBox>{children}</ModalBox>
-            </ModalContainer>
-          )
+      <div
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Transition
+          items={show}
+          config={config.wobbly}
+          from={{ scale: 0, opacity: 0 }}
+          enter={{ scale: 1, opacity: 1 }}
+          leave={{ scale: 0, opacity: 0 }}
+        >
+          {({ scale, opacity }, item) =>
+            item && (
+              <animated.div
+                style={{
+                  scale,
+                  opacity,
+                  width: 450,
+                  zIndex: 300,
+                  padding: 16,
+                  pointerEvents: 'auto',
+                }}
+              >
+                <ModalBox>{children}</ModalBox>
+              </animated.div>
+            )
+          }
+        </Transition>
+      </div>
+      {show && (
+        <div
+          style={{
+            position: 'absolute',
+            zIndex: 200,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          }}
+          onClick={handleBackdropOnClick}
+        />
       )}
-      {show && <Backdrop onClick={handleBackdropOnClick} />}
     </>,
     AppContainer
   );
 };
-
-export default { Window, Title, ScoreValue };

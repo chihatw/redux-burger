@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSpring, animated as a } from 'react-spring';
+import { Spring, animated } from 'react-spring';
 import { easeBackOut } from 'd3-ease';
 import styled from 'styled-components';
 
 import { device } from './../constants';
 
-const Container = styled(a.div)`
+export const Container = styled.div`
   position: absolute;
   width: 140px;
-  display: flex;
-  flex-direction: column;
   top: 48px;
   left: 8px;
   z-index: 10;
@@ -17,23 +15,6 @@ const Container = styled(a.div)`
     left: 16px;
     width: 180px;
   }
-`;
-
-const ItemWrapper = styled(a.div)`
-  width: 100%;
-  height: 44px;
-  position: relative;
-  overflow: visible;
-  will-change: transform, height, opacity;
-`;
-
-const ItemContent = styled(a.div)`
-  background-color: #fff;
-  outline: #ccc solid 1px;
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  border-radius: 8px;
 `;
 
 const usePrevious = (value) => {
@@ -46,14 +27,9 @@ const usePrevious = (value) => {
   return ref.current;
 };
 
-const Item = ({ style, count, children }) => {
+export const Item = ({ count, children, opacity, scale, x, height }) => {
   const [animate, setAnimate] = useState(false);
   const prevCount = usePrevious(count);
-
-  const styles = useSpring({
-    config: { duration: 300, easing: easeBackOut },
-    scale: animate ? 1.3 : 1,
-  });
 
   useEffect(() => {
     let timeout = null;
@@ -72,10 +48,38 @@ const Item = ({ style, count, children }) => {
   }, [count, prevCount, animate]);
 
   return (
-    <ItemWrapper style={{ ...style }}>
-      <ItemContent style={styles}>{children}</ItemContent>
-    </ItemWrapper>
+    <animated.div
+      style={{
+        x,
+        scale,
+        height,
+        opacity,
+        width: '100%',
+        position: 'relative',
+        overflow: 'visible',
+        willChange: 'transform, height, opacity',
+      }}
+    >
+      <Spring
+        config={{ duration: 300, easing: easeBackOut }}
+        scale={animate ? 1.3 : 1}
+      >
+        {({ scale }) => (
+          <animated.div
+            style={{
+              scale,
+              padding: 8,
+              outline: '#ccc solid 1px',
+              display: 'flex',
+              alignItems: 'center',
+              borderRadius: 8,
+              backgroundColor: '#fff',
+            }}
+          >
+            {children}
+          </animated.div>
+        )}
+      </Spring>
+    </animated.div>
   );
 };
-
-export default { Container, Item };

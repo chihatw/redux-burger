@@ -4,7 +4,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import gameConstants from './../constants';
 import useGameAudio from './../hooks/useGameAudio';
 
-import Timer from './../components/Timer';
+import * as Timer from './../components/Timer';
 
 const GameTimer = () => {
   const dispatch = useDispatch();

@@ -7,8 +7,9 @@ import Draggable from 'react-draggable';
 import { updateBurgerContent } from './../actions';
 import useGameAudio from './../hooks/useGameAudio';
 
-import Ingredients from './../components/Ingredients';
+import * as Ingredients from './../components/Ingredients';
 import useViewPort from '../hooks/useViewPort';
+import { imgs } from '..';
 
 const GameIngredients = () => {
   const [{ width }] = useViewPort();
@@ -62,7 +63,7 @@ const DraggableItemIngredient = ({ data }) => {
   const { playOnEveryInteraction } = useGameAudio('pop');
 
   const dispatch = useDispatch();
-  const imgSrc = require(`./../img/${data.name}.png`);
+  const imgSrc = imgs[data.name];
 
   const [, drag, preview] = useDrag({
     item: { type: 'BurgerIngredient' },

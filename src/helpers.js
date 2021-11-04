@@ -28,10 +28,10 @@ const helpers = {
 
   setNumberOfOrders: (time) => {
     if (time >= 40) {
-      return 1;
-    } else if (time >= 20 && time < 40) {
       return 2;
-    } else return 2;
+    } else if (time >= 20 && time < 40) {
+      return 3;
+    } else return 4;
   },
 };
 
