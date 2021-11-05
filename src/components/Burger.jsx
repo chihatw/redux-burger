@@ -197,8 +197,8 @@ const IngredientsContainer = styled.div`
   }
 `;
 
-export const Container = React.forwardRef((props, ref) => {
-  const isDroppable = props.dragStatus.canDrop;
+export const Container = React.forwardRef(({ dragStatus, children }, ref) => {
+  const isDroppable = dragStatus.canDrop;
 
   return (
     <BurgerContainer ref={ref}>
@@ -206,7 +206,7 @@ export const Container = React.forwardRef((props, ref) => {
         <img src={TopBun} alt='Top Bun' />
       </TopBunContainer>
       <IngredientsContainer className={`${isDroppable ? 'animate' : ''}`}>
-        {props.children}
+        {children}
       </IngredientsContainer>
 
       <BottomBunContainer className={`${isDroppable ? ' animate' : ''}`}>

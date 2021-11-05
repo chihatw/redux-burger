@@ -65,20 +65,26 @@ const DraggableItemIngredient = ({ data }) => {
   const dispatch = useDispatch();
   const imgSrc = imgs[data.name];
 
-  const [, drag, preview] = useDrag({
-    item: { type: 'BurgerIngredient' },
+  const [{ opacity }, drag, preview] = useDrag({
+    // useDrop の accept　に対応
+    type: 'BurgerIngredient',
+    item: { name: data.name },
     end: (item, monitor) => {
+      // monitor.getDropResult(): useDrop のコンポーネント内の場合は, useDrop の drop プロパティを取得。
+      // コンポーネント外にドロップの場合は null。
       if (item && monitor.getDropResult()) {
         dispatch(updateBurgerContent(data, updateBurgerContentCallback));
       }
     },
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      opacity: monitor.isDragging() ? 0 : 1,
     }),
   });
 
   const updateBurgerContentCallback = (res) => {
+    // 正解の場合は、audio 'pop.mp3' を鳴らす。
     if (res) playOnEveryInteraction();
+    // 不正解の場合は、audio 'incorrect.mp3' を鳴らす。
     else playOnEveryInteraction('incorrect');
   };
 
@@ -92,33 +98,37 @@ const DraggableItemIngredient = ({ data }) => {
     setDragging(false);
   };
 
-  return isMobile ? (
-    <>
-      <Draggable
-        defaultPosition={{ x: 300, y: 300 }}
-        position={{ x: 0, y: 0 }}
-        scale={1}
-        onStart={handleOnStart}
-        onStop={handleOnStop}
-      >
-        <Ingredients.ItemMobileDragHandler ref={drag}>
-          <img
-            className={`${dragging ? 'zoom' : ''}`}
-            src={imgSrc}
-            alt={data.name}
-          />
-        </Ingredients.ItemMobileDragHandler>
-      </Draggable>
-    </>
-  ) : (
-    <>
-      <DragPreviewImage
-        connect={preview}
-        src={require(`./../img/${data.name}.png`)}
-      />
-      <img ref={drag} src={imgSrc} alt={data.name} />
-    </>
-  );
+  if (isMobile) {
+    // タッチ操作の場合、 <img/> を 直接 Drag させる。
+    return (
+      <>
+        <Draggable
+          defaultPosition={{ x: 300, y: 300 }} // 不要?
+          position={{ x: 0, y: 0 }}
+          scale={1}
+          onStart={handleOnStart}
+          onStop={handleOnStop}
+        >
+          <Ingredients.ItemMobileDragHandler ref={drag}>
+            <img
+              className={`${dragging ? 'zoom' : ''}`}
+              src={imgSrc}
+              alt={data.name}
+            />
+          </Ingredients.ItemMobileDragHandler>
+        </Draggable>
+      </>
+    );
+  } else {
+    // マウス操作の場合、ドラッグした後 DragPreviewImage を表示
+    // 元の <img/> は opacity を 0 にする
+    return (
+      <>
+        <DragPreviewImage connect={preview} src={imgSrc} />
+        <img ref={drag} src={imgSrc} alt={data.name} style={{ opacity }} />
+      </>
+    );
+  }
 };
 
 export default GameIngredients;

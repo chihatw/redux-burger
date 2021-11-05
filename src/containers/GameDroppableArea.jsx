@@ -50,8 +50,11 @@ const GameDroppableArea = () => {
     }, 200);
   }, [dispatch, ordersComplete, serveBurgerCallback]);
 
+  // drop_0: ドロップ可能なコンポーネントの参照につなげる
   const [, drop] = useDrop({
+    // useDrag の type に対応
     accept: 'BurgerIngredient',
+    // drop_1: useDrag の monitor.getDropResult() で取得する
     drop: () => ({ name: 'Burger' }),
   });
 

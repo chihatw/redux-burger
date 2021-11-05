@@ -11,8 +11,8 @@ import thunk from 'redux-thunk';
 import { DndProvider } from 'react-dnd';
 import { isMobile } from 'react-device-detect';
 
-import HTML5Backend from 'react-dnd-html5-backend';
-import TouchBackend from 'react-dnd-touch-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
 
 //Images
 import Cheese from './img/Cheese.png';
@@ -40,6 +40,7 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 
 ReactDOM.render(
   <Provider store={store}>
+    {/* タッチに対応させるかどうかでbackendを切り替える */}
     <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
       <App />
     </DndProvider>

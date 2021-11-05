@@ -3,7 +3,7 @@ import gameConstants from './constants';
 
 export function updateBurgerContent(payload, cb) {
   return (dispatch, getState) => {
-    let payloadWithKey = {
+    const payloadWithKey = {
       key: rnd.generate(8),
       ...payload,
     };
@@ -12,6 +12,7 @@ export function updateBurgerContent(payload, cb) {
       (i) => i.name === payload.name
     );
 
+    // ドロップされた材料が、オーダーに含まれていない場合。
     if (index === -1) {
       dispatch({ type: gameConstants.UPDATE_LIVES });
       dispatch({ type: gameConstants.UPDATE_EXACTORDER, payload: false });

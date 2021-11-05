@@ -21,8 +21,12 @@ const AnimatedBurger = () => {
   );
 
   const [{ canDrop }] = useDrop({
+    // useDrag の type　に対応
     accept: 'BurgerIngredient',
     collect: (monitor) => ({
+      // type: 'BurgerIngredient' のドラッグが始まったら true を返す
+      // canDrop を元にクラス名を追加して、 cssアニメーションで
+      // パンを開くアニメーションを実行
       canDrop: monitor.canDrop(),
     }),
   });
