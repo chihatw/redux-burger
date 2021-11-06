@@ -7,14 +7,11 @@ import { Transition } from '@react-spring/core';
 
 const GameStars = () => {
   const numOfBurgers = useSelector(
-    (state) => state.gameStatus.burgers.length,
+    (state) => state.burgers.length,
     shallowEqual
   );
 
-  const winStreak = useSelector(
-    (state) => state.gameStatus.winStreak,
-    shallowEqual
-  );
+  const winStreak = useSelector((state) => state.winStreak, shallowEqual);
 
   const fewStars = [
     { id: 'star1', x: 20, y: -130, duration: 1 },

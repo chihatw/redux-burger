@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
-import gameConstants from './../constants';
 import useGameAudio from './../hooks/useGameAudio';
 
 import * as Timer from './../components/Timer';
+import * as actions from './../store/gameStatus';
 
 const GameTimer = () => {
   const dispatch = useDispatch();
   const { playing, resetCurrentTime, stopAudio, startAudio } =
     useGameAudio('countdown');
-  const time = useSelector((state) => state.gameStatus.time, shallowEqual);
-  const lives = useSelector((state) => state.gameStatus.lives, shallowEqual);
-  const paused = useSelector((state) => state.gameStatus.paused, shallowEqual);
+  const time = useSelector((state) => state.time, shallowEqual);
+  const lives = useSelector((state) => state.lives, shallowEqual);
+  const paused = useSelector((state) => state.paused, shallowEqual);
 
   useEffect(() => {
     let interval = null;
@@ -20,22 +20,17 @@ const GameTimer = () => {
     if (!interval) {
       interval = setInterval(() => {
         if (time > 0 && lives !== 0 && !paused) {
-          if (time <= 7 && !playing) {
-            startAudio();
-          }
-          dispatch({ type: gameConstants.UPDATE_TIME, payload: time - 1 });
+          time <= 7 && !playing && startAudio();
+          dispatch(actions.updateTime());
         } else {
-          if (playing) {
-            stopAudio();
-          }
-
+          playing && stopAudio();
           resetCurrentTime();
           clearInterval(interval);
         }
       }, 1000);
     }
 
-    return () => clearInterval(interval);
+    return () => void clearInterval(interval);
   }, [
     time,
     lives,

@@ -5,7 +5,7 @@ import { useSpring } from 'react-spring';
 import * as Score from './../components/Score';
 
 const GameScore = () => {
-  const score = useSelector((state) => state.gameStatus.score, shallowEqual);
+  const score = useSelector((state) => state.score, shallowEqual);
   const animatedScore = useSpring({ value: score, from: { value: 0 } });
 
   return (

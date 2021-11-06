@@ -1,18 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import * as serviceWorker from './serviceWorker';
-
-import { createStore, applyMiddleware } from 'redux';
-
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-
 import { DndProvider } from 'react-dnd';
 import { isMobile } from 'react-device-detect';
-
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
+
+import * as serviceWorker from './serviceWorker';
+import configureStore from './store/configureStore';
 
 //Images
 import Cheese from './img/Cheese.png';
@@ -25,8 +20,6 @@ import Bacon from './img/Bacon.png';
 import './index.css';
 import App from './App';
 
-import rootReducer from './reducer';
-
 export const imgs = {
   Bacon: Bacon,
   Patty: Patty,
@@ -36,7 +29,7 @@ export const imgs = {
   Tomato: Tomato,
 };
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>

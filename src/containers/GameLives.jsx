@@ -7,7 +7,7 @@ import * as Lives from './../components/Lives';
 import Heart from './../img/Heart.svg';
 
 const GameLives = () => {
-  const lives = useSelector((state) => state.gameStatus.lives, shallowEqual);
+  const lives = useSelector((state) => state.lives, shallowEqual);
 
   return (
     <Lives.Container>

@@ -4,9 +4,9 @@
   "homepage": "http://monjason23.github.io/burger-dash",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.6.2",
     "classnames": "^2.2.6",
     "d3-ease": "^3.0.1",
-    "immutability-helper": "^3.0.1",
     "randomstring": "^1.1.5",
     "react": "^17.0.2",
     "react-device-detect": "2.1.2",

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useDrag, DragPreviewImage } from 'react-dnd';
 import { isMobile } from 'react-device-detect';
 import Draggable from 'react-draggable';
 
-import { updateBurgerContent } from './../actions';
 import useGameAudio from './../hooks/useGameAudio';
-
 import * as Ingredients from './../components/Ingredients';
 import useViewPort from '../hooks/useViewPort';
 import { imgs } from '..';
+
+import * as actions from './../store/gameStatus';
 
 const GameIngredients = () => {
   const [{ width }] = useViewPort();
@@ -59,6 +59,7 @@ const GameIngredients = () => {
 };
 
 const DraggableItemIngredient = ({ data }) => {
+  const orders = useSelector((state) => state.orders, shallowEqual);
   const [dragging, setDragging] = useState(false);
   const { playOnEveryInteraction } = useGameAudio('pop');
 
@@ -73,20 +74,23 @@ const DraggableItemIngredient = ({ data }) => {
       // monitor.getDropResult(): useDrop のコンポーネント内の場合は, useDrop の drop プロパティを取得。
       // コンポーネント外にドロップの場合は null。
       if (item && monitor.getDropResult()) {
-        dispatch(updateBurgerContent(data, updateBurgerContentCallback));
+        const index = orders.findIndex((i) => i.name === data.name);
+
+        if (index === -1) {
+          playOnEveryInteraction('incorrect');
+          dispatch(actions.updateLives());
+          dispatch(actions.updateExactOrder(false));
+        } else {
+          playOnEveryInteraction();
+          dispatch(actions.addIngredientBurger(data));
+          dispatch(actions.updateOrders());
+        }
       }
     },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0 : 1,
     }),
   });
-
-  const updateBurgerContentCallback = (res) => {
-    // 正解の場合は、audio 'pop.mp3' を鳴らす。
-    if (res) playOnEveryInteraction();
-    // 不正解の場合は、audio 'incorrect.mp3' を鳴らす。
-    else playOnEveryInteraction('incorrect');
-  };
 
   const handleOnStart = (e) => {
     e.preventDefault();

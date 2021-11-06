@@ -3,27 +3,31 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import * as Modal from './../components/Modal';
 import Button from './../components/Button';
 
-import gameConstants from './../constants';
-import { initializeGame } from './../actions';
+import * as actions from './../store/gameStatus';
+import * as helpers from './../helpers';
 
 const GameModalSetting = ({ onExit, isBlurred }) => {
   const dispatch = useDispatch();
-  const paused = useSelector((state) => state.gameStatus.paused, shallowEqual);
+  const paused = useSelector((state) => state.paused, shallowEqual);
 
   const handleTogglePause = () => {
-    dispatch({
-      type: gameConstants.TOGGLE_PAUSE,
-    });
+    dispatch(actions.togglePause());
   };
 
   const handleRestart = () => {
-    dispatch(initializeGame());
+    initializeGame();
   };
   const handleExit = () => {
     onExit();
-    dispatch(initializeGame());
+    initializeGame();
   };
 
+  const initializeGame = () => {
+    dispatch(actions.setLoading());
+    helpers.setTimeoutWithRequestAnimationFrame(() => {
+      dispatch(actions.initialize());
+    }, 100);
+  };
   return (
     <>
       <Modal.Window

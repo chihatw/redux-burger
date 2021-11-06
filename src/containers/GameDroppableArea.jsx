@@ -1,12 +1,11 @@
 import React, { useEffect, useCallback } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-
 import styled from 'styled-components';
 
-import { serveBurger } from './../actions';
 import { device } from './../constants';
 import useGameAudio from './../hooks/useGameAudio';
+import * as actions from './../store/gameStatus';
 
 const DroppableContainer = styled.div`
   position: absolute;
@@ -25,30 +24,46 @@ const DroppableContainer = styled.div`
 `;
 
 const GameDroppableArea = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); // store.dispatch と同じ
 
   const { playOnEveryInteraction } = useGameAudio('serve');
 
   const ordersComplete = useSelector(
-    (state) => state.gameStatus.orders.length === 0,
+    (state) => state.orders.length === 0,
     shallowEqual
   );
 
   const serveBurgerCallback = useCallback(
-    (res) => {
-      if (res) {
-        playOnEveryInteraction();
-      }
-    },
+    () => playOnEveryInteraction(),
     [playOnEveryInteraction]
   );
 
   useEffect(() => {
     if (!ordersComplete) return;
-    setTimeout(() => {
-      dispatch(serveBurger(serveBurgerCallback));
-    }, 200);
-  }, [dispatch, ordersComplete, serveBurgerCallback]);
+
+    let timerId;
+    const flags = { served: false, randomized: false };
+    const startTime = performance.now();
+
+    const timer = (timestamp) => {
+      const diff = Math.max(timestamp - startTime, 0);
+      if (diff > 200 && !flags.served) {
+        flags.served = true;
+        playOnEveryInteraction();
+        dispatch(actions.serveBurger());
+        dispatch(actions.updateWinStreak());
+        dispatch(actions.updateScore());
+        dispatch(actions.updateExactOrder(true));
+      }
+      if (diff > 500 && !flags.randomized) {
+        flags.randomized = true;
+        dispatch(actions.randomizeOrders());
+      }
+      timerId = requestAnimationFrame(timer);
+    };
+    timer(startTime);
+    return () => cancelAnimationFrame(timerId);
+  }, [dispatch, ordersComplete, serveBurgerCallback, playOnEveryInteraction]);
 
   // drop_0: ドロップ可能なコンポーネントの参照につなげる
   const [, drop] = useDrop({

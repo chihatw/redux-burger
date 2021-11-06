@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import Bg from './img/bg.png';
 
@@ -20,9 +20,10 @@ import GameModalSettings from './containers/GameModalSettings';
 
 import useGameAudio from './hooks/useGameAudio';
 
-import gameConstants, { device } from './constants';
+import { device } from './constants';
 
 import './App.css';
+import * as actions from './store/gameStatus';
 
 const GameMainContainer = styled.div`
   position: absolute;
@@ -62,11 +63,6 @@ const App = () => {
     loop: true,
   });
 
-  const loading = useSelector(
-    (state) => state.gameStatus.loading,
-    shallowEqual
-  );
-
   const startGame = () => {
     setStart(true);
     startAudio();
@@ -90,10 +86,7 @@ const App = () => {
       }
     };
 
-    dispatch({
-      type: gameConstants.SET_PAUSE,
-      payload: blurred,
-    });
+    dispatch(actions.setPause(blurred));
 
     window.addEventListener('blur', onBlur);
     window.addEventListener('focus', onFocus);
@@ -121,23 +114,18 @@ const App = () => {
           <GameWelcomeScreen onStart={startGame} />
         ) : (
           <>
-            {!loading && (
-              <>
-                <GameModalResult onExit={stopGame} />
-                <GameModalSettings onExit={stopGame} isBlurred={blurred} />
-                <GameDroppableArea />
-                <GameStars />
-                <GameLives />
-                <GameScore />
-                <GameTimer />
-                <GameOrder />
-                <GameBurger />
-                <GameIngredients />
-              </>
-            )}
+            <GameModalResult onExit={stopGame} />
+            <GameModalSettings onExit={stopGame} isBlurred={blurred} />
+            <GameDroppableArea />
+            <GameStars />
+            <GameLives />
+            <GameScore />
+            <GameTimer />
+            <GameOrder />
+            <GameBurger />
+            <GameIngredients />
           </>
         )}
-
         <img className='bg' src={Bg} alt='' />
       </GameMainContainer>
     </div>

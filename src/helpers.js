@@ -35,4 +35,17 @@ const helpers = {
   },
 };
 
+export const setTimeoutWithRequestAnimationFrame = (callback, duration) => {
+  const startTime = performance.now();
+  const timer = (timestamp) => {
+    const elapsedTime = Math.max(0, timestamp - startTime);
+    if (elapsedTime > duration) {
+      callback();
+    } else {
+      requestAnimationFrame(timer);
+    }
+  };
+  timer(startTime);
+};
+
 export default helpers;

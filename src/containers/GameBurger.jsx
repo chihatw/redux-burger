@@ -10,15 +10,9 @@ const randomAxisX = () => {
 };
 
 const AnimatedBurger = () => {
-  const burgers = useSelector(
-    (state) => state.gameStatus.burgers,
-    shallowEqual
-  );
+  const burgers = useSelector((state) => state.burgers, shallowEqual);
 
-  const burgerIndex = useSelector(
-    (state) => state.gameStatus.burgerIndex,
-    shallowEqual
-  );
+  const burgerIndex = useSelector((state) => state.burgerIndex, shallowEqual);
 
   const [{ canDrop }] = useDrop({
     // useDrag の type　に対応
@@ -70,10 +64,7 @@ const AnimatedBurger = () => {
 };
 
 const GameBurger = () => {
-  const burgerIndex = useSelector(
-    (state) => state.gameStatus.burgerIndex,
-    shallowEqual
-  );
+  const burgerIndex = useSelector((state) => state.burgerIndex, shallowEqual);
 
   return (
     <>

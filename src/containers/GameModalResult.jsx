@@ -2,32 +2,38 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import * as Modal from './../components/Modal';
 import Button from './../components/Button';
-import { initializeGame } from './../actions';
+import * as actions from './../store/gameStatus';
+import * as helpers from './../helpers';
 
 const GameModalResult = ({ onExit }) => {
-  // redux toolkit の場合、 createReducer? createSlice? を使う
   const dispatch = useDispatch();
 
   const [showModal, setShowModal] = useState(false);
 
-  const score = useSelector((state) => state.gameStatus.score, shallowEqual);
-  const lives = useSelector((state) => state.gameStatus.lives, shallowEqual);
-  const time = useSelector((state) => state.gameStatus.time, shallowEqual);
+  const score = useSelector((state) => state.score, shallowEqual);
+  const lives = useSelector((state) => state.lives, shallowEqual);
+  const time = useSelector((state) => state.time, shallowEqual);
 
   useEffect(() => {
     if (lives === 0 || time === 0) {
       setShowModal(true);
     }
-  }, [lives, time, showModal]);
+  }, [lives, time]);
 
   const handlePlayAgain = () => {
-    setShowModal(false);
-    dispatch(initializeGame());
+    gameInitialize();
   };
   const handleExit = () => {
     onExit();
+    gameInitialize();
+  };
+
+  const gameInitialize = () => {
     setShowModal(false);
-    dispatch(initializeGame());
+    dispatch(actions.setLoading());
+    helpers.setTimeoutWithRequestAnimationFrame(() => {
+      dispatch(actions.initialize());
+    }, 100);
   };
 
   return (

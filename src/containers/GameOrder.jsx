@@ -6,7 +6,7 @@ import { imgs } from '..';
 import * as Order from '../components/Order';
 
 const GameOrder = () => {
-  const orders = useSelector((state) => state.gameStatus.orders, shallowEqual);
+  const orders = useSelector((state) => state.orders, shallowEqual);
   return (
     <div style={{ position: 'relative' }}>
       <Order.Container>
