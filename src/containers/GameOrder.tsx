@@ -1,25 +1,34 @@
 import React from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+import { shallowEqual } from 'react-redux';
 import { config, Transition } from 'react-spring';
 import { imgs } from '..';
+import { useAppSelector } from '../app/hooks';
 
 import * as Order from '../components/Order';
 
 const GameOrder = () => {
-  const orders = useSelector((state) => state.burgers.orders, shallowEqual);
+  const orders = useAppSelector((state) => state.burgers.orders, shallowEqual);
   return (
     <div style={{ position: 'relative' }}>
       <Order.Container>
         <Transition
           items={orders}
-          keys={(order) => order.name}
+          keys={(order: { name: string }) => order.name}
           config={config.wobbly}
           trail={100}
           from={{ height: 44, opacity: 1, scale: 1, x: '-110%' }}
           enter={{ height: 44, opacity: 1, scale: 1, x: '0%' }}
           leave={{ height: 0, opacity: 0, scale: 0, x: '0%' }}
         >
-          {({ opacity, scale, x, height }, item) =>
+          {(
+            {
+              opacity,
+              scale,
+              x,
+              height,
+            }: { opacity: number; scale: number; x: string; height: number },
+            item
+          ) =>
             item && (
               <Order.Item
                 x={x}

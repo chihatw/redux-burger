@@ -1,24 +1,24 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
-import useGameAudio from './../hooks/useGameAudio';
+import useGameAudio from '../hooks/useGameAudio';
 
-import * as Timer from './../components/Timer';
-import { updateTime } from './../store/status';
+import * as Timer from '../components/Timer';
+import { updateTime } from '../features/status/statusSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 const GameTimer = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { playing, resetCurrentTime, stopAudio, startAudio } =
     useGameAudio('countdown');
-  const time = useSelector((state) => state.status.time);
-  const lives = useSelector((state) => state.status.lives);
-  const paused = useSelector((state) => state.status.paused);
+  const time = useAppSelector((state) => state.status.time);
+  const lives = useAppSelector((state) => state.status.lives);
+  const paused = useAppSelector((state) => state.status.paused);
 
   useEffect(() => {
-    let interval = null;
+    let interval = 0;
 
     if (!interval) {
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         if (time > 0 && lives !== 0 && !paused) {
           time <= 7 && !playing && startAudio();
           dispatch(updateTime());

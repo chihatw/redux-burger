@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import * as Modal from './../components/Modal';
-import Button from './../components/Button';
-import { setLoading, initializeStatus } from './../store/status';
-import { initializeBurgers } from './../store/burgers';
-import * as helpers from './../helpers';
+import * as Modal from '../components/Modal';
+import Button from '../components/Button';
+import { setLoading, initializeStatus } from '../features/status/statusSlice';
+import { initializeBurgers } from '../features/burgers/burgersSlice';
+import * as helpers from '../helpers';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-const GameModalResult = ({ onExit }) => {
-  const dispatch = useDispatch();
+const GameModalResult: React.FC<{ onExit: () => void }> = ({ onExit }) => {
+  const dispatch = useAppDispatch();
 
   const [showModal, setShowModal] = useState(false);
 
-  const score = useSelector((state) => state.status.score);
-  const lives = useSelector((state) => state.status.lives);
-  const time = useSelector((state) => state.status.time);
+  const score = useAppSelector((state) => state.status.score);
+  const lives = useAppSelector((state) => state.status.lives);
+  const time = useAppSelector((state) => state.status.time);
 
   useEffect(() => {
     if (lives === 0 || time === 0) {

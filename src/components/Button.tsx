@@ -1,11 +1,16 @@
 import styled from 'styled-components';
 
-const Button = styled.button`
+interface Props {
+  settings?: boolean;
+  primary?: boolean;
+}
+
+const Button = styled.button<Pick<Props, 'settings' | 'primary'>>`
   padding: ${(props) => (props.settings ? '8px' : '12px')};
   border: 0px;
   font-weight: bold;
   font-size: 16px;
-  color: ${(props) => (props.primary || props.social ? '#fff' : 'inherit')};
+  color: ${(props) => (props.primary ? '#fff' : 'inherit')};
   border-radius: 8px;
   margin: 4px;
   cursor: pointer;

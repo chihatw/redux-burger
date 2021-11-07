@@ -12,7 +12,7 @@ const serve = new Audio(Serve);
 const countdown = new Audio(Countdown);
 const pop = new Audio(Pop);
 
-const gameAudio = {
+const gameAudio: { [key: string]: HTMLAudioElement } = {
   bg,
   incorrect,
   serve,
@@ -25,14 +25,14 @@ Object.keys(gameAudio).forEach((key) => {
 });
 
 // opt は BGM に {loop: true} を設定するため
-const useGameAudio = (name, opt) => {
+const useGameAudio = (name: string, opt?: { [key: string]: boolean }) => {
   const [playing, toggle] = useState(false);
   // audio に基本の Audioを設定
   const [audio] = useState(gameAudio[name]);
 
   if (opt) {
     Object.keys(opt).forEach((i) => {
-      audio[i] = opt[i];
+      (audio as any)[i] = opt[i];
     });
   }
 
@@ -43,8 +43,10 @@ const useGameAudio = (name, opt) => {
 
   // otherの設定がなければ、既存の audio を再生
   // 既存 audio以外の場合、otherで設定（「誤答音」等）
-  const playOnEveryInteraction = (other) => {
-    const clonedAudio = (gameAudio[other] || audio).cloneNode();
+  const playOnEveryInteraction = (other?: string) => {
+    const clonedAudio = (
+      other ? gameAudio[other] : audio
+    ).cloneNode() as HTMLAudioElement;
     clonedAudio.play();
   };
 

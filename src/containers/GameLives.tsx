@@ -1,18 +1,18 @@
 import React from 'react';
 
-import { useSelector } from 'react-redux';
 import { config, Transition } from 'react-spring';
+import { useAppSelector } from '../app/hooks';
 
-import * as Lives from './../components/Lives';
+import * as Lives from '../components/Lives';
 import Heart from './../img/Heart.svg';
 
 const GameLives = () => {
-  const lives = useSelector((state) => state.status.lives);
-
+  const lives = useAppSelector((state) => state.status.lives);
+  const items = new Array(lives).fill('').map((_, index) => index); // [0, 1, 2]
   return (
     <Lives.Container>
       <Transition
-        items={[...new Array(lives).keys()]} // [0, 1, 2]
+        items={items}
         config={config.wobbly}
         from={{ scale: 0, opacity: 1 }}
         enter={{ scale: 1, opacity: 1 }}

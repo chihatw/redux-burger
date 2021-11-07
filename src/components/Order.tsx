@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Spring, animated } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 import { easeBackOut } from 'd3-ease';
 import styled from 'styled-components';
 
-import { device } from './../constants';
+import { device } from '../constants';
 
 export const Container = styled.div`
   position: absolute;
@@ -17,8 +17,8 @@ export const Container = styled.div`
   }
 `;
 
-const usePrevious = (value) => {
-  const ref = useRef();
+const usePrevious = (value: number) => {
+  const ref = useRef<number>();
 
   useEffect(() => {
     ref.current = value;
@@ -27,20 +27,31 @@ const usePrevious = (value) => {
   return ref.current;
 };
 
-export const Item = ({ count, children, opacity, scale, x, height }) => {
+export const Item: React.FC<{
+  count: number;
+  opacity: number;
+  scale: number;
+  x: string;
+  height: number;
+}> = ({ count, children, opacity, scale, x, height }) => {
   const [animate, setAnimate] = useState(false);
   const prevCount = usePrevious(count);
 
+  const { scale: bounceScale } = useSpring({
+    scale: animate ? 1.3 : 1.0,
+    config: { duration: 300, easing: easeBackOut },
+  });
+
   useEffect(() => {
-    let timeout = null;
+    let timeout = 0;
 
     if (animate) clearTimeout(timeout);
 
-    if (prevCount > count && count !== 0) {
+    if (prevCount && prevCount > count && count !== 0) {
       setAnimate(true);
     }
 
-    timeout = setTimeout(() => {
+    timeout = window.setTimeout(() => {
       setAnimate(false);
     }, 200);
 
@@ -60,26 +71,19 @@ export const Item = ({ count, children, opacity, scale, x, height }) => {
         willChange: 'transform, height, opacity',
       }}
     >
-      <Spring
-        config={{ duration: 300, easing: easeBackOut }}
-        scale={animate ? 1.3 : 1}
+      <animated.div
+        style={{
+          scale: bounceScale,
+          padding: 8,
+          outline: '#ccc solid 1px',
+          display: 'flex',
+          alignItems: 'center',
+          borderRadius: 8,
+          backgroundColor: '#fff',
+        }}
       >
-        {({ scale }) => (
-          <animated.div
-            style={{
-              scale,
-              padding: 8,
-              outline: '#ccc solid 1px',
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: 8,
-              backgroundColor: '#fff',
-            }}
-          >
-            {children}
-          </animated.div>
-        )}
-      </Spring>
+        {children}
+      </animated.div>
     </animated.div>
   );
 };

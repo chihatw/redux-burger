@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { animated } from 'react-spring';
 import { easeCircleOut } from 'd3-ease';
-import Star from '../img/Star.png';
+import StarImg from '../img/Star.png';
 import { Transition } from '@react-spring/core';
+import { useAppSelector } from '../app/hooks';
+
+type Star = {
+  id: string;
+  x: number;
+  y: number;
+  duration: number;
+};
 
 const GameStars = () => {
-  const numOfBurgers = useSelector((state) => state.burgers.burgers.length);
+  const numOfBurgers = useAppSelector((state) => state.burgers.burgers.length);
 
-  const winStreak = useSelector((state) => state.status.winStreak);
+  const winStreak = useAppSelector((state) => state.status.winStreak);
 
-  const fewStars = [
+  const fewStars: Star[] = [
     { id: 'star1', x: 20, y: -130, duration: 1 },
     { id: 'star3', x: -100, y: 70, duration: 3 },
     { id: 'star5', x: 130, y: 20, duration: 4 },
   ];
 
-  const manyStars = [
+  const manyStars: Star[] = [
     { id: 'star1', x: 100, y: -130, duration: 1 },
     { id: 'star2', x: -210, y: 220, duration: 2 },
     { id: 'star3', x: 270, y: -210, duration: 3 },
@@ -25,22 +32,22 @@ const GameStars = () => {
     { id: 'star6', x: -100, y: -210, duration: 3 },
   ];
 
-  const [stars, setStars] = useState([]);
+  const [stars, setStars] = useState<Star[]>([]);
 
   useEffect(() => {
     const start = performance.now();
-    let req;
+    let req = 0;
     // numOfBurgersが 1 以下の時は星を表示しない
     setStars(numOfBurgers > 1 ? (winStreak > 3 ? manyStars : fewStars) : []);
 
-    const resetStars = (timestamp) => {
+    const resetStars = (timestamp: number) => {
       if (timestamp - start > 100) {
         setStars([]);
       } else {
         req = requestAnimationFrame(resetStars);
       }
     };
-    resetStars();
+    resetStars(start);
     return () => cancelAnimationFrame(req);
 
     // ここにstarを含めたら無限ループになる
@@ -73,7 +80,7 @@ const GameStars = () => {
               style={{ position: 'absolute', x, y, scale, opacity }}
             >
               <img
-                src={Star}
+                src={StarImg}
                 alt='Stars'
                 style={{
                   width: 100,

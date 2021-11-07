@@ -1,7 +1,7 @@
 import * as Timer from './Timer';
 import styled from 'styled-components';
 
-import { device } from './../constants';
+import { device } from '../constants';
 
 export const Container = styled(Timer.Container)`
   top: 120px;

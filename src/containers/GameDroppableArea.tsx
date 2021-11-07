@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDrop } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { device } from './../constants';
-import useGameAudio from './../hooks/useGameAudio';
-import {
-  updateWinStreak,
-  updateScore,
-  updateExactOrder,
-} from './../store/status';
-import { serveBurger, randomizeOrders } from './../store/burgers';
+import { device } from '../constants';
+import useGameAudio from '../hooks/useGameAudio';
+import { updateScore } from '../features/status/statusSlice';
+import { serveBurger, randomizeOrders } from '../features/burgers/burgersSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 const DroppableContainer = styled.div`
   position: absolute;
@@ -29,32 +25,30 @@ const DroppableContainer = styled.div`
 `;
 
 const GameDroppableArea = () => {
-  const dispatch = useDispatch(); // store.dispatch と同じ
+  const dispatch = useAppDispatch();
 
   const { playOnEveryInteraction } = useGameAudio('serve');
 
-  const ordersComplete = useSelector(
+  const ordersComplete = useAppSelector(
     (state) => state.burgers.orders.length === 0
   );
 
-  const time = useSelector((state) => state.status.time);
+  const time = useAppSelector((state) => state.status.time);
 
   useEffect(() => {
     if (!ordersComplete) return;
 
-    let timerId;
+    let timerId = 0;
     const flags = { served: false, randomized: false };
     const startTime = performance.now();
 
-    const timer = (timestamp) => {
+    const timer = (timestamp: number) => {
       const diff = Math.max(timestamp - startTime, 0);
       if (diff > 200 && !flags.served) {
         flags.served = true;
         playOnEveryInteraction();
         dispatch(serveBurger());
-        dispatch(updateWinStreak());
         dispatch(updateScore());
-        dispatch(updateExactOrder(true));
       }
       if (diff > 500 && !flags.randomized) {
         flags.randomized = true;
@@ -64,6 +58,7 @@ const GameDroppableArea = () => {
     };
     timer(startTime);
     return () => cancelAnimationFrame(timerId);
+    // ordersComplete 以外の変化は無視
     // eslint-disable-next-line
   }, [ordersComplete]);
 

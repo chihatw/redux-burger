@@ -7,7 +7,6 @@ export const Container = styled(animated.div)`
   flex-direction: row-reverse;
   right: 8px;
   top: 8px;
-
   z-index: 10;
   padding: 2px 4px;
 `;

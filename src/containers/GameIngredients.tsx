@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { shallowEqual } from 'react-redux';
 import { useDrag, DragPreviewImage } from 'react-dnd';
 import { isMobile } from 'react-device-detect';
-import Draggable from 'react-draggable';
+import Draggable, { DraggableEvent } from 'react-draggable';
 
-import useGameAudio from './../hooks/useGameAudio';
-import * as Ingredients from './../components/Ingredients';
+import useGameAudio from '../hooks/useGameAudio';
+import * as Ingredients from '../components/Ingredients';
 import useViewPort from '../hooks/useViewPort';
 import { imgs } from '..';
 
-import { updateLives, updateExactOrder } from './../store/status';
-import { addIngredientBurger, updateOrders } from './../store/burgers';
+import { updateLives } from '../features/status/statusSlice';
+import { addIngredientBurger } from '../features/burgers/burgersSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+
+interface Ingredient {
+  name: string;
+  className: string;
+  height: number;
+}
 
 const GameIngredients = () => {
   const [{ width }] = useViewPort();
 
-  const IngredientsArray = [
+  const IngredientsArray: Ingredient[] = [
     {
       name: 'Cheese',
       className: 'ing-cheese',
@@ -50,41 +57,42 @@ const GameIngredients = () => {
 
   return (
     <Ingredients.Container>
-      {IngredientsArray.map((ing) => (
-        <Ingredients.Item key={ing.name}>
-          <DraggableItemIngredient data={ing} />
+      {IngredientsArray.map((ingredient) => (
+        <Ingredients.Item key={ingredient.name}>
+          <DraggableItemIngredient ingredient={ingredient} />
         </Ingredients.Item>
       ))}
     </Ingredients.Container>
   );
 };
 
-const DraggableItemIngredient = ({ data }) => {
-  const orders = useSelector((state) => state.burgers.orders, shallowEqual);
+const DraggableItemIngredient: React.FC<{ ingredient: Ingredient }> = ({
+  ingredient,
+}) => {
   const [dragging, setDragging] = useState(false);
+  const orders = useAppSelector((state) => state.burgers.orders, shallowEqual);
+  const index = useAppSelector((state) => state.status.index);
   const { playOnEveryInteraction } = useGameAudio('pop');
 
-  const dispatch = useDispatch();
-  const imgSrc = imgs[data.name];
+  const dispatch = useAppDispatch();
+  const imgSrc = imgs[ingredient.name];
 
   const [{ opacity }, drag, preview] = useDrag({
     // useDrop の accept　に対応
     type: 'BurgerIngredient',
-    item: { name: data.name },
+    item: { name: ingredient.name },
     end: (item, monitor) => {
       // monitor.getDropResult(): useDrop のコンポーネント内の場合は, useDrop の drop プロパティを取得。
       // コンポーネント外にドロップの場合は null。
       if (item && monitor.getDropResult()) {
-        const index = orders.findIndex((i) => i.name === data.name);
+        const _index = orders.findIndex((i) => i.name === ingredient.name);
 
-        if (index === -1) {
+        if (_index === -1) {
           playOnEveryInteraction('incorrect');
           dispatch(updateLives());
-          dispatch(updateExactOrder(false));
         } else {
           playOnEveryInteraction();
-          dispatch(addIngredientBurger(data));
-          dispatch(updateOrders());
+          dispatch(addIngredientBurger({ ingredient, index }));
         }
       }
     },
@@ -93,12 +101,12 @@ const DraggableItemIngredient = ({ data }) => {
     }),
   });
 
-  const handleOnStart = (e) => {
+  const handleOnDragStart = (e: DraggableEvent) => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleOnStop = (e) => {
+  const handleOnDragStop = (e: DraggableEvent) => {
     e.preventDefault();
     setDragging(false);
   };
@@ -111,14 +119,14 @@ const DraggableItemIngredient = ({ data }) => {
           defaultPosition={{ x: 300, y: 300 }} // 不要?
           position={{ x: 0, y: 0 }}
           scale={1}
-          onStart={handleOnStart}
-          onStop={handleOnStop}
+          onStart={handleOnDragStart}
+          onStop={handleOnDragStop}
         >
           <Ingredients.ItemMobileDragHandler ref={drag}>
             <img
               className={`${dragging ? 'zoom' : ''}`}
               src={imgSrc}
-              alt={data.name}
+              alt={ingredient.name}
             />
           </Ingredients.ItemMobileDragHandler>
         </Draggable>
@@ -130,7 +138,12 @@ const DraggableItemIngredient = ({ data }) => {
     return (
       <>
         <DragPreviewImage connect={preview} src={imgSrc} />
-        <img ref={drag} src={imgSrc} alt={data.name} style={{ opacity }} />
+        <img
+          ref={drag}
+          src={imgSrc}
+          alt={ingredient.name}
+          style={{ opacity }}
+        />
       </>
     );
   }

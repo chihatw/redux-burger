@@ -7,7 +7,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 
 import * as serviceWorker from './serviceWorker';
-import configureStore from './store/configureStore';
+import { store } from './app/store';
 
 //Images
 import Cheese from './img/Cheese.png';
@@ -20,7 +20,7 @@ import Bacon from './img/Bacon.png';
 import './index.css';
 import App from './App';
 
-export const imgs = {
+export const imgs: { [key: string]: string } = {
   Bacon: Bacon,
   Patty: Patty,
   Cheese: Cheese,
@@ -28,8 +28,6 @@ export const imgs = {
   Pickles: Pickles,
   Tomato: Tomato,
 };
-
-const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>

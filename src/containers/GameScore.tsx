@@ -1,11 +1,11 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { useSpring } from 'react-spring';
+import { useAppSelector } from '../app/hooks';
 
-import * as Score from './../components/Score';
+import * as Score from '../components/Score';
 
 const GameScore = () => {
-  const score = useSelector((state) => state.status.score);
+  const score = useAppSelector((state) => state.status.score);
   const animatedScore = useSpring({ value: score, from: { value: 0 } });
 
   return (

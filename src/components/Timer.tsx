@@ -1,7 +1,7 @@
 import { animated } from 'react-spring';
 import styled, { keyframes } from 'styled-components';
 
-import { device } from './../constants';
+import { device } from '../constants';
 
 export const Container = styled(animated.div)`
   position: absolute;

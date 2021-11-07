@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { device } from './../constants';
+import { device } from '../constants';
 import Flash from './../img/Flash.png';
 
-import Button from './../components/Button';
+import Button from '../components/Button';
 
 const Container = styled.div`
   position: absolute;
@@ -31,7 +31,7 @@ const Container = styled.div`
   }
 `;
 
-const GameWelcomeScreen = ({ onStart }) => {
+const GameWelcomeScreen: React.FC<{ onStart: () => void }> = ({ onStart }) => {
   return (
     <Container>
       <div style={{ display: 'flex', flexDirection: 'column' }}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import styled from 'styled-components';
 
 import { animated } from 'react-spring';
@@ -7,7 +7,7 @@ import BottomBun from './../img/BottomBun.png';
 import TopBun from './../img/TopBun.png';
 import Plate from './../img/Plate.png';
 
-import { device } from './../constants';
+import { device } from '../constants';
 
 const BurgerContainer = styled(animated.div)`
   position: absolute;
@@ -197,7 +197,10 @@ const IngredientsContainer = styled.div`
   }
 `;
 
-export const Container = React.forwardRef(({ dragStatus, children }, ref) => {
+export const Container = React.forwardRef<
+  HTMLDivElement,
+  { children: ReactElement; dragStatus: { canDrop: boolean } }
+>(({ children, dragStatus }, ref) => {
   const isDroppable = dragStatus.canDrop;
 
   return (

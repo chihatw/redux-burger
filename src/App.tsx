@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { useDispatch } from 'react-redux';
-
 import Bg from './img/bg.png';
 
 import GameBurger from './containers/GameBurger';
@@ -23,7 +21,8 @@ import useGameAudio from './hooks/useGameAudio';
 import { device } from './constants';
 
 import './App.css';
-import { setPause } from './store/status';
+import { setPause } from './features/status/statusSlice';
+import { useAppDispatch } from './app/hooks';
 
 const GameMainContainer = styled.div`
   position: absolute;
@@ -57,7 +56,7 @@ const App = () => {
   const [start, setStart] = useState(false);
   const [blurred, setBlurred] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { playing, stopAudio, startAudio } = useGameAudio('bg', {
     loop: true,
