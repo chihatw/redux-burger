@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { animated } from 'react-spring';
 import { easeCircleOut } from 'd3-ease';
 import Star from '../img/Star.png';
 import { Transition } from '@react-spring/core';
 
 const GameStars = () => {
-  const numOfBurgers = useSelector(
-    (state) => state.burgers.length,
-    shallowEqual
-  );
+  const numOfBurgers = useSelector((state) => state.burgers.burgers.length);
 
-  const winStreak = useSelector((state) => state.winStreak, shallowEqual);
+  const winStreak = useSelector((state) => state.status.winStreak);
 
   const fewStars = [
     { id: 'star1', x: 20, y: -130, duration: 1 },

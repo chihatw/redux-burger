@@ -23,7 +23,7 @@ import useGameAudio from './hooks/useGameAudio';
 import { device } from './constants';
 
 import './App.css';
-import * as actions from './store/gameStatus';
+import { setPause } from './store/status';
 
 const GameMainContainer = styled.div`
   position: absolute;
@@ -86,7 +86,7 @@ const App = () => {
       }
     };
 
-    dispatch(actions.setPause(blurred));
+    dispatch(setPause(blurred));
 
     window.addEventListener('blur', onBlur);
     window.addEventListener('focus', onFocus);

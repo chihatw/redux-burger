@@ -1,17 +1,18 @@
 import React from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Modal from './../components/Modal';
 import Button from './../components/Button';
 
-import * as actions from './../store/gameStatus';
+import { togglePause, setLoading, initializeStatus } from './../store/status';
+import { initializeBurgers } from './../store/burgers';
 import * as helpers from './../helpers';
 
 const GameModalSetting = ({ onExit, isBlurred }) => {
   const dispatch = useDispatch();
-  const paused = useSelector((state) => state.paused, shallowEqual);
+  const paused = useSelector((state) => state.status.paused);
 
   const handleTogglePause = () => {
-    dispatch(actions.togglePause());
+    dispatch(togglePause());
   };
 
   const handleRestart = () => {
@@ -23,9 +24,10 @@ const GameModalSetting = ({ onExit, isBlurred }) => {
   };
 
   const initializeGame = () => {
-    dispatch(actions.setLoading());
+    dispatch(setLoading());
     helpers.setTimeoutWithRequestAnimationFrame(() => {
-      dispatch(actions.initialize());
+      dispatch(initializeStatus());
+      dispatch(initializeBurgers());
     }, 100);
   };
   return (

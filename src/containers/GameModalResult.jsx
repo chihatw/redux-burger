@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Modal from './../components/Modal';
 import Button from './../components/Button';
-import * as actions from './../store/gameStatus';
+import { setLoading, initializeStatus } from './../store/status';
+import { initializeBurgers } from './../store/burgers';
 import * as helpers from './../helpers';
 
 const GameModalResult = ({ onExit }) => {
@@ -10,9 +11,9 @@ const GameModalResult = ({ onExit }) => {
 
   const [showModal, setShowModal] = useState(false);
 
-  const score = useSelector((state) => state.score, shallowEqual);
-  const lives = useSelector((state) => state.lives, shallowEqual);
-  const time = useSelector((state) => state.time, shallowEqual);
+  const score = useSelector((state) => state.status.score);
+  const lives = useSelector((state) => state.status.lives);
+  const time = useSelector((state) => state.status.time);
 
   useEffect(() => {
     if (lives === 0 || time === 0) {
@@ -30,9 +31,10 @@ const GameModalResult = ({ onExit }) => {
 
   const gameInitialize = () => {
     setShowModal(false);
-    dispatch(actions.setLoading());
+    dispatch(setLoading());
     helpers.setTimeoutWithRequestAnimationFrame(() => {
-      dispatch(actions.initialize());
+      dispatch(initializeStatus());
+      dispatch(initializeBurgers());
     }, 100);
   };
 

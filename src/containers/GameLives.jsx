@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { config, Transition } from 'react-spring';
 
 import * as Lives from './../components/Lives';
 import Heart from './../img/Heart.svg';
 
 const GameLives = () => {
-  const lives = useSelector((state) => state.lives, shallowEqual);
+  const lives = useSelector((state) => state.status.lives);
 
   return (
     <Lives.Container>

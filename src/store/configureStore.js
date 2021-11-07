@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import reducer from './gameStatus';
+import reducer from './reducer';
 
 const configureAppStore = () => {
   return configureStore({ reducer });

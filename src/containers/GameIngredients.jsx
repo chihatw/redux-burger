@@ -9,7 +9,8 @@ import * as Ingredients from './../components/Ingredients';
 import useViewPort from '../hooks/useViewPort';
 import { imgs } from '..';
 
-import * as actions from './../store/gameStatus';
+import { updateLives, updateExactOrder } from './../store/status';
+import { addIngredientBurger, updateOrders } from './../store/burgers';
 
 const GameIngredients = () => {
   const [{ width }] = useViewPort();
@@ -59,7 +60,7 @@ const GameIngredients = () => {
 };
 
 const DraggableItemIngredient = ({ data }) => {
-  const orders = useSelector((state) => state.orders, shallowEqual);
+  const orders = useSelector((state) => state.burgers.orders, shallowEqual);
   const [dragging, setDragging] = useState(false);
   const { playOnEveryInteraction } = useGameAudio('pop');
 
@@ -78,12 +79,12 @@ const DraggableItemIngredient = ({ data }) => {
 
         if (index === -1) {
           playOnEveryInteraction('incorrect');
-          dispatch(actions.updateLives());
-          dispatch(actions.updateExactOrder(false));
+          dispatch(updateLives());
+          dispatch(updateExactOrder(false));
         } else {
           playOnEveryInteraction();
-          dispatch(actions.addIngredientBurger(data));
-          dispatch(actions.updateOrders());
+          dispatch(addIngredientBurger(data));
+          dispatch(updateOrders());
         }
       }
     },

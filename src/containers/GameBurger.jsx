@@ -10,9 +10,8 @@ const randomAxisX = () => {
 };
 
 const AnimatedBurger = () => {
-  const burgers = useSelector((state) => state.burgers, shallowEqual);
-
-  const burgerIndex = useSelector((state) => state.burgerIndex, shallowEqual);
+  const index = useSelector((state) => state.burgers.index);
+  const burgers = useSelector((state) => state.burgers.burgers, shallowEqual);
 
   const [{ canDrop }] = useDrop({
     // useDrag の type　に対応
@@ -29,7 +28,7 @@ const AnimatedBurger = () => {
     <Burger.Container dragStatus={{ canDrop }}>
       <Burger.IngredientsList>
         <Transition
-          items={burgers[burgerIndex].ingredients}
+          items={burgers[index].ingredients}
           config={config.wobbly}
           from={{ height: 0, opacity: 0.7, x: 0, y: -10, scale: 1.5 }}
           enter={(item) => ({
@@ -40,12 +39,12 @@ const AnimatedBurger = () => {
             scale: 1,
           })}
         >
-          {({ height, opacity, x, y, scale }, item, k, index) =>
+          {({ height, opacity, x, y, scale }, item, k, i) =>
             item && (
               <Burger.Ingredient
                 className={item.className}
                 style={{
-                  zIndex: burgers[burgerIndex].ingredients.length - index,
+                  zIndex: burgers[index].ingredients.length - i,
                   height,
                   opacity,
                   x,
@@ -64,12 +63,12 @@ const AnimatedBurger = () => {
 };
 
 const GameBurger = () => {
-  const burgerIndex = useSelector((state) => state.burgerIndex, shallowEqual);
+  const index = useSelector((state) => state.burgers.index);
 
   return (
     <>
       <Transition
-        items={burgerIndex}
+        items={index}
         config={config.wobbly}
         from={{ x: '100%' }}
         enter={{ x: '0%' }}

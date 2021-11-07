@@ -1,11 +1,16 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { useDrop } from 'react-dnd';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { device } from './../constants';
 import useGameAudio from './../hooks/useGameAudio';
-import * as actions from './../store/gameStatus';
+import {
+  updateWinStreak,
+  updateScore,
+  updateExactOrder,
+} from './../store/status';
+import { serveBurger, randomizeOrders } from './../store/burgers';
 
 const DroppableContainer = styled.div`
   position: absolute;
@@ -29,14 +34,10 @@ const GameDroppableArea = () => {
   const { playOnEveryInteraction } = useGameAudio('serve');
 
   const ordersComplete = useSelector(
-    (state) => state.orders.length === 0,
-    shallowEqual
+    (state) => state.burgers.orders.length === 0
   );
 
-  const serveBurgerCallback = useCallback(
-    () => playOnEveryInteraction(),
-    [playOnEveryInteraction]
-  );
+  const time = useSelector((state) => state.status.time);
 
   useEffect(() => {
     if (!ordersComplete) return;
@@ -50,20 +51,21 @@ const GameDroppableArea = () => {
       if (diff > 200 && !flags.served) {
         flags.served = true;
         playOnEveryInteraction();
-        dispatch(actions.serveBurger());
-        dispatch(actions.updateWinStreak());
-        dispatch(actions.updateScore());
-        dispatch(actions.updateExactOrder(true));
+        dispatch(serveBurger());
+        dispatch(updateWinStreak());
+        dispatch(updateScore());
+        dispatch(updateExactOrder(true));
       }
       if (diff > 500 && !flags.randomized) {
         flags.randomized = true;
-        dispatch(actions.randomizeOrders());
+        dispatch(randomizeOrders(time));
       }
       timerId = requestAnimationFrame(timer);
     };
     timer(startTime);
     return () => cancelAnimationFrame(timerId);
-  }, [dispatch, ordersComplete, serveBurgerCallback, playOnEveryInteraction]);
+    // eslint-disable-next-line
+  }, [ordersComplete]);
 
   // drop_0: ドロップ可能なコンポーネントの参照につなげる
   const [, drop] = useDrop({
