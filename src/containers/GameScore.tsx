@@ -4,7 +4,7 @@ import { useAppSelector } from '../app/hooks';
 
 import * as Score from '../components/Score';
 
-const GameScore = () => {
+const GameScore = React.memo(() => {
   const score = useAppSelector((state) => state.status.score);
   const animatedScore = useSpring({ value: score, from: { value: 0 } });
 
@@ -16,6 +16,6 @@ const GameScore = () => {
       </Score.Container>
     </>
   );
-};
+});
 
 export default GameScore;

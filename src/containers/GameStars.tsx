@@ -4,6 +4,7 @@ import { easeCircleOut } from 'd3-ease';
 import StarImg from '../img/Star.png';
 import { Transition } from '@react-spring/core';
 import { useAppSelector } from '../app/hooks';
+import { selectTotalBurgers } from '../features/burgers/burgersSlice';
 
 type Star = {
   id: string;
@@ -12,32 +13,31 @@ type Star = {
   duration: number;
 };
 
-const GameStars = () => {
-  const numOfBurgers = useAppSelector((state) => state.burgers.length);
+const fewStars: Star[] = [
+  { id: 'star1', x: 20, y: -130, duration: 1 },
+  { id: 'star3', x: -100, y: 70, duration: 3 },
+  { id: 'star5', x: 130, y: 20, duration: 4 },
+];
 
+const manyStars: Star[] = [
+  { id: 'star1', x: 100, y: -130, duration: 1 },
+  { id: 'star2', x: -210, y: 220, duration: 2 },
+  { id: 'star3', x: 270, y: -210, duration: 3 },
+  { id: 'star4', x: 100, y: -130, duration: 1 },
+  { id: 'star5', x: 10, y: 220, duration: 4 },
+  { id: 'star6', x: -100, y: -210, duration: 3 },
+];
+
+const GameStars = React.memo(() => {
+  const numOfBurgers = useAppSelector(selectTotalBurgers);
   const winStreak = useAppSelector((state) => state.status.winStreak);
-
-  const fewStars: Star[] = [
-    { id: 'star1', x: 20, y: -130, duration: 1 },
-    { id: 'star3', x: -100, y: 70, duration: 3 },
-    { id: 'star5', x: 130, y: 20, duration: 4 },
-  ];
-
-  const manyStars: Star[] = [
-    { id: 'star1', x: 100, y: -130, duration: 1 },
-    { id: 'star2', x: -210, y: 220, duration: 2 },
-    { id: 'star3', x: 270, y: -210, duration: 3 },
-    { id: 'star4', x: 100, y: -130, duration: 1 },
-    { id: 'star5', x: 10, y: 220, duration: 4 },
-    { id: 'star6', x: -100, y: -210, duration: 3 },
-  ];
 
   const [stars, setStars] = useState<Star[]>([]);
 
   useEffect(() => {
     const start = performance.now();
     let req = 0;
-    // numOfBurgersが 1 以下の時は星を表示しない
+    // numOfBurgersが 1 以下の時は星を表示しない(= 1つ目のハンバーガーは星演出なし)
     setStars(numOfBurgers > 1 ? (winStreak > 3 ? manyStars : fewStars) : []);
 
     const resetStars = (timestamp: number) => {
@@ -50,7 +50,7 @@ const GameStars = () => {
     resetStars(start);
     return () => cancelAnimationFrame(req);
 
-    // ここにstarを含めたら無限ループになる
+    // numOfBurgers の変化にだけ依存
     // eslint-disable-next-line
   }, [numOfBurgers]);
 
@@ -94,6 +94,6 @@ const GameStars = () => {
       </Transition>
     </div>
   );
-};
+});
 
 export default GameStars;

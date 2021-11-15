@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import BackgroundMusic from './../audio/bg.mp3';
 import Incorrect from './../audio/wrong.mp3';
@@ -26,7 +26,7 @@ Object.keys(gameAudio).forEach((key) => {
 
 // opt は BGM に {loop: true} を設定するため
 const useGameAudio = (name: string, opt?: { [key: string]: boolean }) => {
-  const [playing, toggle] = useState(false);
+  const [playing, setPlaying] = useState(false);
   // audio に基本の Audioを設定
   const [audio] = useState(gameAudio[name]);
 
@@ -43,27 +43,29 @@ const useGameAudio = (name: string, opt?: { [key: string]: boolean }) => {
 
   // otherの設定がなければ、既存の audio を再生
   // 既存 audio以外の場合、otherで設定（「誤答音」等）
-  const playOnEveryInteraction = (other?: string) => {
-    const clonedAudio = (
-      other ? gameAudio[other] : audio
-    ).cloneNode() as HTMLAudioElement;
-    clonedAudio.play();
-  };
+  const playOnEveryInteraction = useCallback(
+    (other?: string) => {
+      const clonedAudio = (
+        other ? gameAudio[other] : audio
+      ).cloneNode() as HTMLAudioElement;
+      clonedAudio.play();
+    },
+    [audio]
+  );
 
-  const resetCurrentTime = () => {
+  const resetCurrentTime = useCallback(() => {
     audio.currentTime = 0;
-  };
+  }, [audio]);
 
-  const stopAudio = () => {
-    toggle(false);
-  };
+  const stopAudio = useCallback(() => {
+    setPlaying(false);
+  }, []);
 
-  const startAudio = () => {
-    toggle(true);
-  };
+  const startAudio = useCallback(() => {
+    setPlaying(true);
+  }, []);
 
   return {
-    toggle,
     playing,
     stopAudio,
     startAudio,

@@ -1,13 +1,13 @@
 import React from 'react';
-import { shallowEqual } from 'react-redux';
 import { config, Transition } from 'react-spring';
-import { imgs } from '..';
+
 import { useAppSelector } from '../app/hooks';
-
 import * as Order from '../components/Order';
+import { imgs } from '../constants';
+import { selectAllOrders } from '../features/orders/ordersSlice';
 
-const GameOrder = () => {
-  const orders = useAppSelector((state) => state.orders, shallowEqual);
+const GameOrder = React.memo(() => {
+  const orders = useAppSelector(selectAllOrders);
   return (
     <div style={{ position: 'relative' }}>
       <Order.Container>
@@ -55,6 +55,6 @@ const GameOrder = () => {
       </Order.Container>
     </div>
   );
-};
+});
 
 export default GameOrder;

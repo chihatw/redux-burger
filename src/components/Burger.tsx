@@ -1,6 +1,5 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-
 import { animated } from 'react-spring';
 
 import BottomBun from './../img/BottomBun.png';
@@ -9,7 +8,7 @@ import Plate from './../img/Plate.png';
 
 import { device } from '../constants';
 
-const BurgerContainer = styled(animated.div)`
+const BurgerContainer = styled.div`
   position: absolute;
   bottom: 140px;
   width: 310px;
@@ -19,7 +18,6 @@ const BurgerContainer = styled(animated.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
 
   -webkit-tap-highlight-color: transparent;
 
@@ -35,7 +33,7 @@ export const IngredientsList = styled.ul`
   width: 350px;
 `;
 
-export const Ingredient = styled(animated.li)`
+export const AnimatedIngredient = styled(animated.li)`
   position: relative;
   z-index: 1;
   height: 30px;
@@ -122,7 +120,7 @@ export const Ingredient = styled(animated.li)`
   }
 `;
 
-const TopBunContainer = styled(animated.div)`
+const TopBunContainer = styled.div`
   position: relative;
   z-index: 100;
   width: 210px;
@@ -147,7 +145,7 @@ const TopBunContainer = styled(animated.div)`
 `;
 
 const BottomBunContainer = styled(TopBunContainer)`
-  top: 0;
+  top: 0px;
   z-index: 2;
 
   transform: scale(1) translateY(0px);
@@ -162,7 +160,7 @@ const BottomBunContainer = styled(TopBunContainer)`
   }
 `;
 
-const PlateContainer = styled(animated.div)`
+const PlateContainer = styled.div`
   position: absolute;
   width: 360px;
   bottom: -64px;
@@ -178,7 +176,7 @@ const PlateContainer = styled(animated.div)`
   }
 `;
 
-export const SliderContainer = styled(animated.div)`
+export const AnimatedSliderContainer = styled(animated.div)`
   position: absolute;
   width: 100%;
   left: 0;
@@ -197,14 +195,13 @@ const IngredientsContainer = styled.div`
   }
 `;
 
-export const Container = React.forwardRef<
-  HTMLDivElement,
-  { children: ReactElement; dragStatus: { canDrop: boolean } }
->(({ children, dragStatus }, ref) => {
-  const isDroppable = dragStatus.canDrop;
+export const Container: React.FC<{
+  canDrop: boolean;
+}> = ({ children, canDrop }) => {
+  const isDroppable = canDrop;
 
   return (
-    <BurgerContainer ref={ref}>
+    <BurgerContainer>
       <TopBunContainer className={`${isDroppable ? ' animate' : ''}`}>
         <img src={TopBun} alt='Top Bun' />
       </TopBunContainer>
@@ -220,4 +217,4 @@ export const Container = React.forwardRef<
       </PlateContainer>
     </BurgerContainer>
   );
-});
+};

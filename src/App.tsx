@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import styled from 'styled-components';
 
@@ -21,8 +21,15 @@ import useGameAudio from './hooks/useGameAudio';
 import { device } from './constants';
 
 import './App.css';
-import { setPause } from './features/status/statusSlice';
-import { useAppDispatch } from './app/hooks';
+import {
+  setPause,
+  handleBlurred,
+  handleFocused,
+  updateScore,
+} from './features/status/statusSlice';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { addBurger } from './features/burgers/burgersSlice';
+import { createOrders } from './features/orders/ordersSlice';
 
 const GameMainContainer = styled.div`
   position: absolute;
@@ -53,8 +60,14 @@ const GameMainContainer = styled.div`
 `;
 
 const App = () => {
-  const [start, setStart] = useState(false);
-  const [blurred, setBlurred] = useState(false);
+  const isFocused = useAppSelector((state) => state.status.isFocused);
+  const shownWelcomeScreen = useAppSelector(
+    (state) => state.status.shownWelcomeScreen
+  );
+  const ordersComplete = useAppSelector(
+    (state) => state.orders.ids.length === 0
+  );
+  const time = useAppSelector((state) => state.status.time);
 
   const dispatch = useAppDispatch();
 
@@ -62,30 +75,22 @@ const App = () => {
     loop: true,
   });
 
-  const startGame = () => {
-    setStart(true);
-    startAudio();
-  };
-
-  const stopGame = () => {
-    setStart(false);
-    stopAudio();
-  };
+  const { playOnEveryInteraction: playServeSE } = useGameAudio('serve');
 
   useEffect(() => {
     const onBlur = () => {
-      setBlurred(true);
+      dispatch(handleBlurred());
       playing && stopAudio();
     };
 
     const onFocus = () => {
-      setBlurred(false);
-      if (!playing && start) {
+      dispatch(handleFocused());
+      if (!playing && !shownWelcomeScreen) {
         startAudio();
       }
     };
 
-    dispatch(setPause(blurred));
+    dispatch(setPause(!isFocused));
 
     window.addEventListener('blur', onBlur);
     window.addEventListener('focus', onFocus);
@@ -94,27 +99,54 @@ const App = () => {
       window.removeEventListener('blur', onBlur);
       window.removeEventListener('focus', onFocus);
     };
-  }, [start, playing, blurred, dispatch, stopAudio, startAudio]);
+  }, [playing, isFocused, dispatch, stopAudio, startAudio, shownWelcomeScreen]);
+
+  useEffect(() => {
+    if (!ordersComplete) return;
+
+    let timerId = 0;
+    const flags = { isServed: false, isOrdered: false };
+    const startTime = performance.now();
+
+    const timer = (timestamp: number) => {
+      const diff = Math.max(timestamp - startTime, 0);
+      if (diff > 200 && !flags.isServed) {
+        flags.isServed = true;
+        dispatch(addBurger());
+        dispatch(updateScore());
+        playServeSE();
+      }
+      if (diff > 500 && !flags.isOrdered) {
+        flags.isOrdered = true;
+        dispatch(createOrders(time));
+      }
+      timerId = requestAnimationFrame(timer);
+    };
+    timer(startTime);
+    return () => cancelAnimationFrame(timerId);
+    // ordersComplete 以外の変化は無視
+    // eslint-disable-next-line
+  }, [ordersComplete]);
 
   return (
     <div
       className='App'
       style={{
-        overflow: 'hidden',
+        color: '#6d6d6d',
         width: '100%',
         height: '100%',
         position: 'fixed',
+        overflow: 'hidden',
         textAlign: 'center',
-        color: '#6d6d6d',
       }}
     >
       <GameMainContainer>
-        {!start ? (
-          <GameWelcomeScreen onStart={startGame} />
+        {shownWelcomeScreen ? (
+          <GameWelcomeScreen startAudio={startAudio} />
         ) : (
           <>
-            <GameModalResult onExit={stopGame} />
-            <GameModalSettings onExit={stopGame} isBlurred={blurred} />
+            <GameModalResult stopAudio={stopAudio} />
+            <GameModalSettings stopAudio={stopAudio} />
             <GameDroppableArea />
             <GameStars />
             <GameLives />

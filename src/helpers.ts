@@ -20,6 +20,7 @@ const helpers = {
 
     for (let i = 0; i < orders.length; i++) {
       const newOrder = {
+        id: String(i),
         name: shuffledIngredients[i],
         count: helpers.randomNumber(1, 2),
       };

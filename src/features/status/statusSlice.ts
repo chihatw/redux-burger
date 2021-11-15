@@ -1,21 +1,31 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 
-// Reducer
 const initialStatus = {
-  index: 0,
   time: 60,
   score: 0,
   lives: 3,
   paused: false,
   loading: false,
   winStreak: 1,
+  isFocused: true,
   exactOrder: true,
+  shownWelcomeScreen: true,
 };
 
 const slice = createSlice({
   name: 'status',
   initialState: initialStatus,
   reducers: {
+    handleFocused: (state) => {
+      state.isFocused = true;
+    },
+    handleBlurred: (state) => {
+      state.isFocused = false;
+    },
+    hideWelcomeScreen: (state) => {
+      state.shownWelcomeScreen = false;
+    },
     updateTime: (state) => {
       state.time--;
     },
@@ -25,7 +35,6 @@ const slice = createSlice({
         state.winStreak = state.exactOrder ? state.winStreak + 1 : 1;
         state.exactOrder = true;
       }
-      state.index++;
     },
     updateLives: (state) => {
       state.lives = Math.max(state.lives - 1, 0);
@@ -40,7 +49,13 @@ const slice = createSlice({
     setLoading: (state) => {
       state.loading = true;
     },
-    initializeStatus: () => initialStatus,
+    initializeStatus: (
+      _,
+      action: PayloadAction<{ withWelcomeScreen: boolean }>
+    ) => ({
+      ...initialStatus,
+      shownWelcomeScreen: action.payload.withWelcomeScreen,
+    }),
   },
 });
 export const {
@@ -50,6 +65,17 @@ export const {
   updateScore,
   updateLives,
   togglePause,
+  handleFocused,
+  handleBlurred,
   initializeStatus,
+  hideWelcomeScreen,
 } = slice.actions;
 export default slice.reducer;
+
+export const selectLivesArray = createSelector(
+  // ここ↓↓↓を state.status にすると、 statusの他のプロパティが変更される度に処理が行われる
+  (state: RootState) => state.status.lives,
+  (lives) => {
+    return new Array(lives).fill('').map((_, index) => index + 1); // [0, 1, 2]
+  }
+);

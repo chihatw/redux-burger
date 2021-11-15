@@ -4,11 +4,11 @@ import { config, Transition } from 'react-spring';
 import { useAppSelector } from '../app/hooks';
 
 import * as Lives from '../components/Lives';
+import { selectLivesArray } from '../features/status/statusSlice';
 import Heart from './../img/Heart.svg';
 
-const GameLives = () => {
-  const lives = useAppSelector((state) => state.status.lives);
-  const items = new Array(lives).fill('').map((_, index) => index); // [0, 1, 2]
+const GameLives = React.memo(() => {
+  const items = useAppSelector(selectLivesArray);
   return (
     <Lives.Container>
       <Transition
@@ -19,7 +19,7 @@ const GameLives = () => {
         leave={{ scale: 0, opacity: 0 }}
       >
         {(styles, item) =>
-          Number.isInteger(item) && (
+          item && (
             <Lives.Heart style={styles}>
               <img src={Heart} alt='Heart' />
             </Lives.Heart>
@@ -28,6 +28,6 @@ const GameLives = () => {
       </Transition>
     </Lives.Container>
   );
-};
+});
 
 export default GameLives;

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { shallowEqual } from 'react-redux';
 import { useDrag, DragPreviewImage } from 'react-dnd';
 import { isMobile } from 'react-device-detect';
 import Draggable, { DraggableEvent } from 'react-draggable';
@@ -7,12 +6,12 @@ import Draggable, { DraggableEvent } from 'react-draggable';
 import useGameAudio from '../hooks/useGameAudio';
 import * as Ingredients from '../components/Ingredients';
 import useViewPort from '../hooks/useViewPort';
-import { imgs } from '..';
 
 import { updateLives } from '../features/status/statusSlice';
-import { updateBurgers } from '../features/burgers/burgersSlice';
+import { addIngredientToLastBurger } from '../features/burgers/burgersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { updateOrders } from '../features/orders/ordersSlice';
+import { selectAllOrders, updateOrders } from '../features/orders/ordersSlice';
+import { imgs } from '../constants';
 
 interface Ingredient {
   name: string;
@@ -20,7 +19,7 @@ interface Ingredient {
   height: number;
 }
 
-const GameIngredients = () => {
+const GameIngredients = React.memo(() => {
   const [{ width }] = useViewPort();
 
   const IngredientsArray: Ingredient[] = [
@@ -58,21 +57,20 @@ const GameIngredients = () => {
 
   return (
     <Ingredients.Container>
-      {IngredientsArray.map((ingredient) => (
+      {IngredientsArray.map((ingredient, index) => (
         <Ingredients.Item key={ingredient.name}>
           <DraggableItemIngredient ingredient={ingredient} />
         </Ingredients.Item>
       ))}
     </Ingredients.Container>
   );
-};
+});
 
-const DraggableItemIngredient: React.FC<{ ingredient: Ingredient }> = ({
-  ingredient,
-}) => {
+const DraggableItemIngredient: React.FC<{
+  ingredient: Ingredient;
+}> = React.memo(({ ingredient }) => {
   const [dragging, setDragging] = useState(false);
-  const orders = useAppSelector((state) => state.orders, shallowEqual);
-  const index = useAppSelector((state) => state.status.index);
+  const orders = useAppSelector(selectAllOrders);
   const { playOnEveryInteraction } = useGameAudio('pop');
 
   const dispatch = useAppDispatch();
@@ -93,8 +91,8 @@ const DraggableItemIngredient: React.FC<{ ingredient: Ingredient }> = ({
           dispatch(updateLives());
         } else {
           playOnEveryInteraction();
-          dispatch(updateBurgers({ ingredient, index }));
-          dispatch(updateOrders({ ingredient, index }));
+          dispatch(addIngredientToLastBurger(ingredient));
+          dispatch(updateOrders(ingredient));
         }
       }
     },
@@ -149,6 +147,6 @@ const DraggableItemIngredient: React.FC<{ ingredient: Ingredient }> = ({
       </>
     );
   }
-};
+});
 
 export default GameIngredients;

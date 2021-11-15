@@ -9,25 +9,8 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import * as serviceWorker from './serviceWorker';
 import { store } from './app/store';
 
-//Images
-import Cheese from './img/Cheese.png';
-import Lettuce from './img/Lettuce.png';
-import Patty from './img/Patty.png';
-import Pickles from './img/Pickles.png';
-import Tomato from './img/Tomato.png';
-import Bacon from './img/Bacon.png';
-
 import './index.css';
 import App from './App';
-
-export const imgs: { [key: string]: string } = {
-  Bacon: Bacon,
-  Patty: Patty,
-  Cheese: Cheese,
-  Lettuce: Lettuce,
-  Pickles: Pickles,
-  Tomato: Tomato,
-};
 
 ReactDOM.render(
   <Provider store={store}>

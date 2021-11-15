@@ -5,6 +5,8 @@ import { device } from '../constants';
 import Flash from './../img/Flash.png';
 
 import Button from '../components/Button';
+import { useAppDispatch } from '../app/hooks';
+import { hideWelcomeScreen } from '../features/status/statusSlice';
 
 const Container = styled.div`
   position: absolute;
@@ -31,13 +33,20 @@ const Container = styled.div`
   }
 `;
 
-const GameWelcomeScreen: React.FC<{ onStart: () => void }> = ({ onStart }) => {
+const GameWelcomeScreen: React.FC<{
+  startAudio: () => void;
+}> = ({ startAudio }) => {
+  const dispatch = useAppDispatch();
+  const handleClick = () => {
+    startAudio();
+    dispatch(hideWelcomeScreen());
+  };
   return (
     <Container>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <img src={Flash} alt='Flash' />
         <div>
-          <Button primary onClick={onStart}>
+          <Button primary onClick={handleClick}>
             Start game
           </Button>
         </div>

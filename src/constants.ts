@@ -1,3 +1,10 @@
+import Cheese from './img/Cheese.png';
+import Lettuce from './img/Lettuce.png';
+import Patty from './img/Patty.png';
+import Pickles from './img/Pickles.png';
+import Tomato from './img/Tomato.png';
+import Bacon from './img/Bacon.png';
+
 export const IngredientsArray = [
   'Cheese',
   'Pickles',
@@ -26,4 +33,13 @@ export const device = {
   laptopL: `(min-width: ${size.laptopL})`,
   desktop: `(min-width: ${size.desktop})`,
   desktopL: `(min-width: ${size.desktop})`,
+};
+
+export const imgs: { [key: string]: string } = {
+  Bacon: Bacon,
+  Patty: Patty,
+  Cheese: Cheese,
+  Lettuce: Lettuce,
+  Pickles: Pickles,
+  Tomato: Tomato,
 };
