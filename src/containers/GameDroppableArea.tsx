@@ -5,8 +5,9 @@ import styled from 'styled-components';
 import { device } from '../constants';
 import useGameAudio from '../hooks/useGameAudio';
 import { updateScore } from '../features/status/statusSlice';
-import { serveBurger, randomizeOrders } from '../features/burgers/burgersSlice';
+import { addBurger } from '../features/burgers/burgersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { addOrders } from '../features/orders/ordersSlice';
 
 const DroppableContainer = styled.div`
   position: absolute;
@@ -29,9 +30,7 @@ const GameDroppableArea = () => {
 
   const { playOnEveryInteraction } = useGameAudio('serve');
 
-  const ordersComplete = useAppSelector(
-    (state) => state.burgers.orders.length === 0
-  );
+  const ordersComplete = useAppSelector((state) => state.orders.length === 0);
 
   const time = useAppSelector((state) => state.status.time);
 
@@ -47,12 +46,12 @@ const GameDroppableArea = () => {
       if (diff > 200 && !flags.served) {
         flags.served = true;
         playOnEveryInteraction();
-        dispatch(serveBurger());
+        dispatch(addBurger());
         dispatch(updateScore());
       }
       if (diff > 500 && !flags.randomized) {
         flags.randomized = true;
-        dispatch(randomizeOrders(time));
+        dispatch(addOrders(time));
       }
       timerId = requestAnimationFrame(timer);
     };

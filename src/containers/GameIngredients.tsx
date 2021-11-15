@@ -10,8 +10,9 @@ import useViewPort from '../hooks/useViewPort';
 import { imgs } from '..';
 
 import { updateLives } from '../features/status/statusSlice';
-import { addIngredientBurger } from '../features/burgers/burgersSlice';
+import { updateBurgers } from '../features/burgers/burgersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { updateOrders } from '../features/orders/ordersSlice';
 
 interface Ingredient {
   name: string;
@@ -70,7 +71,7 @@ const DraggableItemIngredient: React.FC<{ ingredient: Ingredient }> = ({
   ingredient,
 }) => {
   const [dragging, setDragging] = useState(false);
-  const orders = useAppSelector((state) => state.burgers.orders, shallowEqual);
+  const orders = useAppSelector((state) => state.orders, shallowEqual);
   const index = useAppSelector((state) => state.status.index);
   const { playOnEveryInteraction } = useGameAudio('pop');
 
@@ -92,7 +93,8 @@ const DraggableItemIngredient: React.FC<{ ingredient: Ingredient }> = ({
           dispatch(updateLives());
         } else {
           playOnEveryInteraction();
-          dispatch(addIngredientBurger({ ingredient, index }));
+          dispatch(updateBurgers({ ingredient, index }));
+          dispatch(updateOrders({ ingredient, index }));
         }
       }
     },

@@ -10,10 +10,7 @@ const randomAxisX = () => Math.floor(Math.random() * 16) - 8;
 
 const AnimatedBurger = () => {
   const index = useAppSelector((state) => state.status.index);
-  const burgers = useAppSelector(
-    (state) => state.burgers.burgers,
-    shallowEqual
-  );
+  const burgers = useAppSelector((state) => state.burgers, shallowEqual);
 
   const [{ canDrop }] = useDrop({
     // useDrag の type　に対応
@@ -30,7 +27,7 @@ const AnimatedBurger = () => {
     <Burger.Container dragStatus={{ canDrop }}>
       <Burger.IngredientsList>
         <Transition
-          items={burgers[index].ingredients}
+          items={burgers[index]}
           config={config.wobbly}
           from={{ height: 0, opacity: 0.7, x: 0, y: -10, scale: 1.5 }}
           enter={(item) => ({
@@ -49,7 +46,7 @@ const AnimatedBurger = () => {
                   x,
                   y,
                   scale,
-                  zIndex: burgers[index].ingredients.length - i,
+                  zIndex: burgers[index].length - i,
                   height,
                   opacity,
                 }}

@@ -7,7 +7,7 @@ import { useAppSelector } from '../app/hooks';
 import * as Order from '../components/Order';
 
 const GameOrder = () => {
-  const orders = useAppSelector((state) => state.burgers.orders, shallowEqual);
+  const orders = useAppSelector((state) => state.orders, shallowEqual);
   return (
     <div style={{ position: 'relative' }}>
       <Order.Container>
@@ -40,14 +40,13 @@ const GameOrder = () => {
                 <div style={{ width: 30, marginRight: 8 }}>
                   <img
                     src={imgs[item.name]}
-                    // src={require(`./../img/${item.name}.png`)}
                     alt={item.name}
                     style={{ width: '100%' }}
                   />
                 </div>
                 <div>{item.name}</div>
                 <div style={{ marginLeft: 'auto' }}>
-                  x <strong>{item.count !== 0 ? item.count : 1}</strong>
+                  x <strong>{item.count > 0 ? item.count : 0}</strong>
                 </div>
               </Order.Item>
             )

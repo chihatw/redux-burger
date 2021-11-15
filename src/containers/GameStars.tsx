@@ -13,7 +13,7 @@ type Star = {
 };
 
 const GameStars = () => {
-  const numOfBurgers = useAppSelector((state) => state.burgers.burgers.length);
+  const numOfBurgers = useAppSelector((state) => state.burgers.length);
 
   const winStreak = useAppSelector((state) => state.status.winStreak);
 
